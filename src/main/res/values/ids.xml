@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="image" type="id"/>
+    <item name="delete" type="id"/>
+    <item name="adapter_item_tag_key" type="id" />
+</resources>

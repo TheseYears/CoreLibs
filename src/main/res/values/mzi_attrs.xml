@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="MultiZoomImages">
+        <attr name="backgroundColor" format="color"/>
+        <attr name="indicator" format="reference"/>
+        <attr name="indicatorWidth" format="dimension"/>
+        <attr name="indicatorHeight" format="dimension"/>
+        <attr name="indicatorLeftMargin" format="dimension"/>
+        <attr name="indicatorRightMargin" format="dimension"/>
+    </declare-styleable>
+
+</resources>
