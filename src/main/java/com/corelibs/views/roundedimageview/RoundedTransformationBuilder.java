@@ -187,9 +187,9 @@ public final class RoundedTransformationBuilder {
                 .setBorderColor(mBorderColor)
                 .setOval(mOval)
                 .toBitmap();
-        if (!source.equals(transformed)) {
-          source.recycle();
-        }
+//        if (!source.equals(transformed)) {
+//          source.recycle();
+//        }
         return transformed;
       }
     };
