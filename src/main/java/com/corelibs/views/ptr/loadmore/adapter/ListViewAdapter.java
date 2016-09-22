@@ -4,6 +4,8 @@ import android.view.View;
 import android.widget.AbsListView;
 import android.widget.ListView;
 
+import com.corelibs.views.ptr.loadmore.OnScrollListener;
+
 /**
  * 针对ListView或继承自ListView的控件的适配类
  * <BR/>
@@ -28,13 +30,16 @@ public class ListViewAdapter<T extends ListView> implements LoadMoreAdapter<T> {
     }
 
     @Override
-    public int getLastVisiblePosition() {
-        return listView.getLastVisiblePosition();
-    }
+    public void setOnScrollListener(final OnScrollListener<T> l) {
+        listView.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override public void onScrollStateChanged(AbsListView view, int scrollState) {}
 
-    @Override
-    public void setOnScrollListener(AbsListView.OnScrollListener l) {
-        listView.setOnScrollListener(l);
+            @Override public void onScroll(AbsListView view, int firstVisibleItem,
+                                           int visibleItemCount, int totalItemCount) {
+                if (l != null)
+                    l.onScroll(listView, firstVisibleItem, visibleItemCount, totalItemCount);
+            }
+        });
     }
 
     @Override

@@ -2,11 +2,11 @@ package com.corelibs.views.ptr.layout;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.widget.AbsListView;
 
 import com.corelibs.views.cube.ptr.PtrFrameLayout;
 import com.corelibs.views.ptr.loadmore.AutoLoadMoreHandler;
 import com.corelibs.views.ptr.loadmore.AutoLoadMoreHook;
+import com.corelibs.views.ptr.loadmore.OnScrollListener;
 
 /**
  * 扩展于Ultra-Pull-To-Refresh库, 此控件为Lollipop风格的下拉刷新并带自动加载的BaseLayout.
@@ -16,27 +16,27 @@ import com.corelibs.views.ptr.loadmore.AutoLoadMoreHook;
  * 3. 此控件是对{@link AutoLoadMoreHandler}功能的转发. {@link AutoLoadMoreHook#getLoadMoreHandler()}
  *    需要的就是AutoLoadMoreHandler. <BR/>
  * 4. 刷新完成或加载完成后请调用{@link #complete()}, 而不是{@link #refreshComplete()}或{@link #loadingFinished()}.
- * 
+ *
  * @author Ryan
  */
 public class PtrAutoLoadMoreLayout<T> extends PtrLollipopLayout<T> {
 
     private AutoLoadMoreHandler loadMoreHandler;
 
-	public PtrAutoLoadMoreLayout(Context context) {
-		this(context, null);
-	}
+    public PtrAutoLoadMoreLayout(Context context) {
+        this(context, null);
+    }
 
-	public PtrAutoLoadMoreLayout(Context context, AttributeSet attrs) {
-		this(context, attrs, 0);
-	}
+    public PtrAutoLoadMoreLayout(Context context, AttributeSet attrs) {
+        this(context, attrs, 0);
+    }
 
-	public PtrAutoLoadMoreLayout(Context context, AttributeSet attrs, int defStyle) {
-		super(context, attrs, defStyle);
-		init();
-	}
+    public PtrAutoLoadMoreLayout(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
+        init();
+    }
 
-	private void init() {}
+    private void init() {}
 
     @Override
     protected void onFinishInflate() {
@@ -66,12 +66,12 @@ public class PtrAutoLoadMoreLayout<T> extends PtrLollipopLayout<T> {
     }
 
     private AutoLoadMoreHook setupHook() {
-		if (mContent != null && mContent instanceof AutoLoadMoreHook) {
+        if (mContent != null && mContent instanceof AutoLoadMoreHook) {
             return (AutoLoadMoreHook) mContent;
-		} else {
+        } else {
             throw new IllegalStateException("PtrAutoLoadMoreLayout child should implement AutoLoadMoreHook");
         }
-	}
+    }
 
     @Override
     public void complete() {
@@ -79,7 +79,8 @@ public class PtrAutoLoadMoreLayout<T> extends PtrLollipopLayout<T> {
         loadMoreHandler.loadingComplete();
     }
 
-    public void setOnScrollListener(AbsListView.OnScrollListener listener) {
+    @SuppressWarnings("unchecked")
+    public void setOnScrollListener(OnScrollListener listener) {
         loadMoreHandler.setOnScrollListener(listener);
     }
 

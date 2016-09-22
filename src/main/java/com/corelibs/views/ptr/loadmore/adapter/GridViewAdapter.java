@@ -4,6 +4,7 @@ import android.view.View;
 import android.widget.AbsListView;
 
 import com.corelibs.views.GridViewWithHeaderAndFooter;
+import com.corelibs.views.ptr.loadmore.OnScrollListener;
 
 /**
  * 针对GridView或继承自GridView的控件的适配类
@@ -29,13 +30,16 @@ public class GridViewAdapter<T extends GridViewWithHeaderAndFooter> implements L
     }
 
     @Override
-    public int getLastVisiblePosition() {
-        return gridView.getLastVisiblePosition();
-    }
+    public void setOnScrollListener(final OnScrollListener<T> l) {
+        gridView.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override public void onScrollStateChanged(AbsListView view, int scrollState) {}
 
-    @Override
-    public void setOnScrollListener(AbsListView.OnScrollListener l) {
-        gridView.setOnScrollListener(l);
+            @Override public void onScroll(AbsListView view, int firstVisibleItem,
+                                           int visibleItemCount, int totalItemCount) {
+                if (l != null)
+                    l.onScroll(gridView, firstVisibleItem, visibleItemCount, totalItemCount);
+            }
+        });
     }
 
     @Override

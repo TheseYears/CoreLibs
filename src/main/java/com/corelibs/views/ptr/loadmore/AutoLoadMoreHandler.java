@@ -4,7 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.AbsListView;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.corelibs.R;
@@ -20,7 +20,7 @@ import com.corelibs.views.ptr.loadmore.adapter.LoadMoreAdapter;
  * <BR/>
  * Created by Ryan on 2016/1/20.
  */
-public class AutoLoadMoreHandler<T extends LoadMoreAdapter> {
+public class AutoLoadMoreHandler<H extends ViewGroup, T extends LoadMoreAdapter<H>> {
 
     public static final int DEFAULT_WHEN_TO_LOADING = 3;
 
@@ -41,7 +41,7 @@ public class AutoLoadMoreHandler<T extends LoadMoreAdapter> {
     private boolean isLoading = false;
     private boolean isCustomBackground = false;
 
-    private AbsListView.OnScrollListener scrollListener;
+    private OnScrollListener<H> scrollListener;
 
     public AutoLoadMoreHandler(Context context, T adapter) {
         this.context = context;
@@ -57,26 +57,20 @@ public class AutoLoadMoreHandler<T extends LoadMoreAdapter> {
         this.callback = callback;
     }
 
-    public void setOnScrollListener(AbsListView.OnScrollListener listener) {
+    public void setOnScrollListener(OnScrollListener<H> listener) {
         scrollListener = listener;
     }
 
     private void init() {
         initLoadingView();
-        adapter.setOnScrollListener(new AbsListView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(AbsListView view, int scrollState) {
-                if (scrollListener != null) scrollListener.onScrollStateChanged(view, scrollState);
-            }
-
-            @Override
-            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+        adapter.setOnScrollListener(new OnScrollListener<H>() {
+            @Override public void onScroll(H view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
                 if (scrollListener != null) scrollListener.onScroll(view, firstVisibleItem, visibleItemCount, totalItemCount);
                 if (state != State.DISABLED && state != State.REFRESHING
                         && state != State.FORCE_REFRESH && !ptrFrameLayout.isRefreshing()) {
                     if (visibleItemCount < totalItemCount) {
-                        if (view.getCount() > 0)
-                            if (aboutToLoad())
+                        if (totalItemCount > 0)
+                            if (aboutToLoad(firstVisibleItem + visibleItemCount - 1))
                                 setLoadingStatus();
                     }
                 }
@@ -87,7 +81,7 @@ public class AutoLoadMoreHandler<T extends LoadMoreAdapter> {
     @SuppressLint("InflateParams")
     private void initLoadingView() {
         if (loadingView == null) {
-            loadingView = LayoutInflater.from(context).inflate(R.layout.loading_more, null);
+            loadingView = LayoutInflater.from(context).inflate(R.layout.loading_more, adapter.getView(), false);
             loadingContent = loadingView.findViewById(R.id.content);
             loadingLabel = (TextView) loadingView.findViewById(R.id.loadingText);
             progress = (CircularBar) loadingView.findViewById(R.id.progress);
@@ -97,9 +91,9 @@ public class AutoLoadMoreHandler<T extends LoadMoreAdapter> {
         loadingContent.setVisibility(View.GONE);
     }
 
-    private boolean aboutToLoad() {
+    private boolean aboutToLoad(int lastVisiblePosition) {
         for (int i = 0; i < whenToLoading; i++) {
-            if (adapter.getLastVisiblePosition() == (adapter.getRowCount() - whenToLoading - i))
+            if (lastVisiblePosition == (adapter.getRowCount() - whenToLoading - i))
                 return true;
         }
         return false;

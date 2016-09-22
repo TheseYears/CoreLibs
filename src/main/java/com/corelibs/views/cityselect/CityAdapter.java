@@ -4,14 +4,11 @@ import android.content.Context;
 
 import com.corelibs.R;
 import com.corelibs.utils.adapter.BaseAdapterHelper;
-import com.corelibs.utils.adapter.QuickAdapter;
+import com.corelibs.utils.adapter.normal.QuickAdapter;
 
 import java.util.HashMap;
 import java.util.List;
 
-/**
- * Created by Ryan on 2016/2/1.
- */
 public class CityAdapter<T extends City> extends QuickAdapter<T> {
 
     private String current, previous;
@@ -48,8 +45,7 @@ public class CityAdapter<T extends City> extends QuickAdapter<T> {
     }
 
     @Override
-    protected void convert(BaseAdapterHelper helper, T item) {
-        int position = helper.getPosition();
+    protected void convert(BaseAdapterHelper helper, T item, int position) {
         helper.setText(R.id.name, item.getCityName());
 
         if (position == 0) {

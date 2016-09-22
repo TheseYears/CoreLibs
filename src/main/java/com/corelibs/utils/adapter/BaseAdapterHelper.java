@@ -21,6 +21,7 @@ import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.support.v7.widget.RecyclerView;
 import android.text.util.Linkify;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
@@ -54,7 +55,7 @@ import java.io.File;
  *         .getView();
  * </pre>
  */
-public class BaseAdapterHelper {
+public class BaseAdapterHelper extends RecyclerView.ViewHolder {
 
     /** Views indexed with their IDs */
     private final SparseArray<View> views;
@@ -68,30 +69,40 @@ public class BaseAdapterHelper {
     /** Package private field to retain the associated user object and detect a change */
     Object associatedObject;
 
-    protected BaseAdapterHelper(Context context, ViewGroup parent, int layoutId, int position) {
+    protected BaseAdapterHelper(Context context, ViewGroup parent, View convertView, int position) {
+        super(convertView);
         this.context = context;
         this.position = position;
-        this.views = new SparseArray<View>();
-        convertView = LayoutInflater.from(context) //
-                .inflate(layoutId, parent, false);
-        convertView.setTag(this);
+        this.views = new SparseArray<>();
+        this.convertView = convertView;
+        this.convertView.setTag(this);
+
     }
 
-    /**
-     * This method is the only entry point to get a BaseAdapterHelper.
-     * @param context     The current context.
-     * @param convertView The convertView arg passed to the getView() method.
-     * @param parent      The parent arg passed to the getView() method.
-     * @return A BaseAdapterHelper instance.
-     */
     public static BaseAdapterHelper get(Context context, View convertView, ViewGroup parent, int layoutId) {
         return get(context, convertView, parent, layoutId, -1);
     }
 
-    /** This method is package private and should only be used by QuickAdapter. */
-    static BaseAdapterHelper get(Context context, View convertView, ViewGroup parent, int layoutId, int position) {
+    public static BaseAdapterHelper get(Context context, View convertView, ViewGroup parent, View content) {
+        return get(context, convertView, parent, content, -1);
+    }
+
+    public static BaseAdapterHelper get(Context context, View convertView, ViewGroup parent, int layoutId, int position) {
         if (convertView == null) {
-            return new BaseAdapterHelper(context, parent, layoutId, position);
+            convertView = LayoutInflater.from(context).inflate(layoutId, parent, false);
+            return new BaseAdapterHelper(context, parent, convertView, position);
+        }
+
+        // Retrieve the existing helper and update its position
+        BaseAdapterHelper existingHelper = (BaseAdapterHelper) convertView.getTag();
+        existingHelper.position = position;
+        return existingHelper;
+    }
+
+    public static BaseAdapterHelper get(Context context, View convertView, ViewGroup parent, View content, int position) {
+        if (convertView == null) {
+            convertView = content;
+            return new BaseAdapterHelper(context, parent, convertView, position);
         }
 
         // Retrieve the existing helper and update its position
@@ -419,7 +430,7 @@ public class BaseAdapterHelper {
      * @param listener The item on click listener;
      * @return The BaseAdapterHelper for chaining.
      */
-    public BaseAdapterHelper setOnItemClickListener(int viewId,AdapterView.OnItemClickListener listener) {
+    public BaseAdapterHelper setOnItemClickListener(int viewId, AdapterView.OnItemClickListener listener) {
         AdapterView view = retrieveView(viewId);
         view.setOnItemClickListener(listener);
         return this;
@@ -430,7 +441,7 @@ public class BaseAdapterHelper {
      * @param listener   The item long click listener;
      * @return The BaseAdapterHelper for chaining.
      */
-    public BaseAdapterHelper setOnItemLongClickListener(int viewId,AdapterView.OnItemLongClickListener listener) {
+    public BaseAdapterHelper setOnItemLongClickListener(int viewId, AdapterView.OnItemLongClickListener listener) {
         AdapterView view = retrieveView(viewId);
         view.setOnItemLongClickListener(listener);
         return this;
@@ -441,7 +452,7 @@ public class BaseAdapterHelper {
      * @param listener The item selected click listener;
      * @return The BaseAdapterHelper for chaining.
      */
-    public BaseAdapterHelper setOnItemSelectedClickListener(int viewId,AdapterView.OnItemSelectedListener listener) {
+    public BaseAdapterHelper setOnItemSelectedClickListener(int viewId, AdapterView.OnItemSelectedListener listener) {
         AdapterView view = retrieveView(viewId);
         view.setOnItemSelectedListener(listener);
         return this;
@@ -510,17 +521,6 @@ public class BaseAdapterHelper {
     /** Retrieve the convertView */
     public View getView() {
         return convertView;
-    }
-
-    /**
-     * Retrieve the overall position of the data in the list.
-     * @throws IllegalArgumentException If the position hasn't been set at the construction of the this helper.
-     */
-    public int getPosition() {
-        if (position == -1)
-            throw new IllegalStateException("Use BaseAdapterHelper constructor " +
-                    "with position if you need to retrieve the position.");
-        return position;
     }
 
     @SuppressWarnings("unchecked")

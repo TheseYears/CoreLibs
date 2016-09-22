@@ -13,12 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.corelibs.utils.adapter;
+package com.corelibs.utils.adapter.normal;
 
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+
+import com.corelibs.utils.adapter.BaseAdapterHelper;
+import com.corelibs.utils.adapter.IdObject;
+import com.corelibs.utils.adapter.multi.BaseItemViewDelegate;
+import com.corelibs.utils.adapter.multi.ItemViewDelegateManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,13 +36,13 @@ import java.util.List;
  */
 public abstract class BaseQuickAdapter<T, H extends BaseAdapterHelper> extends BaseAdapter {
 
-    protected static final String TAG = BaseQuickAdapter.class.getSimpleName();
-
     protected final Context context;
 
     protected final int layoutResId;
 
     protected final List<T> data;
+
+    protected final ItemViewDelegateManager<T, H> delegateManager;
 
     /**
      * Create a QuickAdapter.
@@ -59,6 +64,7 @@ public abstract class BaseQuickAdapter<T, H extends BaseAdapterHelper> extends B
         this.data = data == null ? new ArrayList<T>() : new ArrayList<>(data);
         this.context = context;
         this.layoutResId = layoutResId;
+        delegateManager = new ItemViewDelegateManager<>();
     }
 
     @Override
@@ -79,12 +85,38 @@ public abstract class BaseQuickAdapter<T, H extends BaseAdapterHelper> extends B
     }
 
     @Override
+    public int getViewTypeCount() {
+        int count = delegateManager.getItemViewDelegateCount();
+        return count < 1 ? 1 : count;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (!hasMultiItemType())
+            return super.getItemViewType(position);
+        return delegateManager.getItemViewType(getItem(position), position);
+    }
+
+    @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        final H helper = getAdapterHelper(position, convertView, parent);
+        H helper;
         T item = getItem(position);
-        convert(helper, item);
+
+        if (hasMultiItemType()) {
+            BaseItemViewDelegate<T, H> delegate = delegateManager.getItemViewDelegate(item, position);
+            helper = getAdapterHelper(position, delegate, convertView, parent);
+            delegate.convert(helper, item, position);
+        } else {
+            helper = getAdapterHelper(position, null, convertView, parent);
+            convert(helper, item, position);
+        }
+
         helper.setAssociatedObject(item);
         return helper.getView();
+    }
+
+    private boolean hasMultiItemType() {
+        return delegateManager.getItemViewDelegateCount() > 0;
     }
 
     public List<T> getData() {
@@ -148,10 +180,11 @@ public abstract class BaseQuickAdapter<T, H extends BaseAdapterHelper> extends B
 
     /**
      * Implement this method and use the helper to adapt the view to the given item.
-     * @param helper A fully initialized helper.
-     * @param item   The item that needs to be displayed.
+     * @param helper     A fully initialized helper.
+     * @param item       The item that needs to be displayed.
+     * @param position   The position that needs to be displayed.
      */
-    protected abstract void convert(H helper, T item);
+    protected abstract void convert(H helper, T item, int position);
 
     /**
      * You can override this method to use a custom BaseAdapterHelper in order to fit your needs
@@ -165,6 +198,6 @@ public abstract class BaseQuickAdapter<T, H extends BaseAdapterHelper> extends B
      * @param parent      The parent that this view will eventually be attached to
      * @return An instance of BaseAdapterHelper
      */
-    protected abstract H getAdapterHelper(int position, View convertView, ViewGroup parent);
+    protected abstract H getAdapterHelper(int position, BaseItemViewDelegate<T, H> delegate, View convertView, ViewGroup parent);
 
 }
