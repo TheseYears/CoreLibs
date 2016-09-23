@@ -57,7 +57,7 @@ public abstract class AbstractHeaderAndFooterWrapper<T, H extends BaseAdapterHel
     }
 
     private int getRealItemCount() {
-        return mInnerAdapter.getItemCount();
+        return mInnerAdapter == null ? 0 : mInnerAdapter.getItemCount();
     }
 
     @Override
@@ -104,7 +104,7 @@ public abstract class AbstractHeaderAndFooterWrapper<T, H extends BaseAdapterHel
 
     @Override
     public void onViewAttachedToWindow(H holder) {
-        mInnerAdapter.onViewAttachedToWindow(holder);
+        if (mInnerAdapter != null) mInnerAdapter.onViewAttachedToWindow(holder);
         int position = holder.getLayoutPosition();
         if (isHeaderViewPos(position) || isFooterViewPos(position)) {
             WrapperUtils.setFullSpan(holder);

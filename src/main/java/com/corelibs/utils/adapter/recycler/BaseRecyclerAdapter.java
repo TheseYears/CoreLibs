@@ -68,6 +68,11 @@ public abstract class BaseRecyclerAdapter<T, H extends BaseAdapterHelper> extend
         delegateManager = new ItemViewDelegateManager<>();
     }
 
+    public T getItem(int position) {
+        if (position >= data.size()) return null;
+        return data.get(position);
+    }
+
     @Override
     public int getItemCount() {
         return data == null ? 0 : data.size();

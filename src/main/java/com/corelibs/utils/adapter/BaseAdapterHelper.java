@@ -395,7 +395,6 @@ public class BaseAdapterHelper extends RecyclerView.ViewHolder {
      */
     public BaseAdapterHelper setOnClickListener(int viewId, View.OnClickListener listener) {
         View view = retrieveView(viewId);
-        if (view.getTag() == null || (view.getTag() instanceof Integer)) view.setTag(position);
         view.setOnClickListener(listener);
         return this;
     }
