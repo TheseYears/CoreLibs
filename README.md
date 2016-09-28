@@ -34,6 +34,18 @@ GalleryFinalConfigurator.config(getApplicationContext()); //初始化GalleryFina
 ````
 * 根据服务器接口返回JSON的结构, 新建一个实体类, 并集成IBaseData.
 * 根据需要项目的主题可以使用CoreLibs中的AppBaseCompactTheme.
+* 如果在Application中初始化了GlobalExceptionHandler还需要在Manifest中加入如下声明:
+
+````
+<activity
+    android:name="com.corelibs.exception.ExceptionDialogActivity"
+    android:screenOrientation="portrait"
+    android:theme="@style/ExceptionDialogStyle" />
+
+<activity
+    android:name="com.corelibs.exception.ExceptionDetailActivity"
+    android:screenOrientation="portrait" />
+````
 
 ## 使用方法
 
