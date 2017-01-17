@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 
+import com.corelibs.utils.ParameterizedTypeImpl;
 import com.corelibs.utils.ToastMgr;
 import com.google.gson.Gson;
 
@@ -42,20 +43,25 @@ public class ImageUploadHelper<T> {
         uploader.post(url, params, files, fileKey, listener);
     }
 
-    public void doPost(ImageUploadRequest<T> request) {
+    public void doPost(ImageUploadRequest request) {
         doPost(request.getUrl(), request.getParams(), request.getFiles(),
                 request.getFileKey(), request.getListener());
     }
 
-    public Observable<T> doPostWithObservable(final ImageUploadRequest<T> request) {
+    public Observable<T> doPostWithObservable(final ImageUploadRequest request) {
         return Observable.create(new Observable.OnSubscribe<T>() {
             @Override
             public void call(final Subscriber<? super T> subscriber) {
                 uploader.post(request.getUrl(), request.getParams(), request.getFiles(),
                         request.getFileKey(), new ImageUploader.OnResponseListener() {
-                    @Override
+                    @Override @SuppressWarnings("unchecked")
                     public void onResponse(String data) {
-                        subscriber.onNext(gson.fromJson(data, request.getOutputClass()));
+                        if (request.getInnerClasses() == null || request.getInnerClasses().length <= 0)
+                            subscriber.onNext((T) gson.fromJson(data, request.getOutputClass()));
+                        else
+                            subscriber.onNext((T) gson.fromJson(data, ParameterizedTypeImpl
+                                    .get(request.getOutputClass(), request.getInnerClasses())));
+
                         subscriber.onCompleted();
                     }
 

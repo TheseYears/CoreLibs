@@ -47,18 +47,20 @@ public class ImageUploader {
         HttpURLConnection conn;
         DataOutputStream outStream;
         try {
-            long current = System.currentTimeMillis();
-            if (Configuration.isShowNetworkParams())
-                Log.e(HttpLoggingInterceptor.TAG, "Sending request " + actionUrl +
-                        "\nRequest Params: "+ params + "\nRequest Images: "+ files);
-
             uri = new URL(actionUrl);
             conn = setupConnection(uri);
 
             outStream = new DataOutputStream(conn.getOutputStream());
             buildOutStream(outStream, params, files, fileKey);
 
-            // 得到响应码
+            if (Configuration.isShowNetworkParams()) {
+                Log.e(HttpLoggingInterceptor.TAG, actionUrl);
+                if (params != null)
+                    Log.e(HttpLoggingInterceptor.TAG, params.toString());
+                if (files != null)
+                    Log.e(HttpLoggingInterceptor.TAG, files.toString());
+            }
+
             int res = conn.getResponseCode();
 
             InputStream in = conn.getInputStream();
@@ -71,12 +73,8 @@ public class ImageUploader {
                 data += line;
 
             if (res == 200) {
-                if (Configuration.isShowNetworkParams())
-                    Log.e(HttpLoggingInterceptor.TAG, "Received response for " + actionUrl +
-                            " in " + (System.currentTimeMillis() - current) + " ms" +
-                            "\nResponse Json: " + data);
-
                 if (listener != null) listener.onResponse(data);
+                if (Configuration.isShowNetworkParams()) Log.e(HttpLoggingInterceptor.TAG, data);
             } else {
                 if (listener != null) listener.onError(new HttpException(res, data));
             }
@@ -176,7 +174,6 @@ public class ImageUploader {
 
     public interface OnResponseListener {
         void onResponse(String data);
-
         void onError(Exception e);
     }
 

@@ -5,18 +5,27 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 文件上传请求封装类, 通过{@link com.corelibs.utils.uploader.ImageUploadRequest.Builder}
+ * 文件上传请求封装类, 通过{@link Builder}
  * 组装请求.
  * <BR/>
  * Created by Ryan on 2016/1/20.
  */
-public class ImageUploadRequest<T> {
+public class ImageUploadRequest {
     private String url;
     private Map<String, String> params;
     private Map<String, File> files;
     private String fileKey;
     private ImageUploader.OnResponseListener listener;
-    private Class<T> outputClass;
+    private Class outputClass;
+    private Class[] innerClasses;
+
+    public Class[] getInnerClasses() {
+        return innerClasses;
+    }
+
+    public void setInnerClasses(Class[] innerClasses) {
+        this.innerClasses = innerClasses;
+    }
 
     public String getUrl() {
         return url;
@@ -50,7 +59,7 @@ public class ImageUploadRequest<T> {
         this.listener = listener;
     }
 
-    public Class<T> getOutputClass() {
+    public Class getOutputClass() {
         return outputClass;
     }
 
@@ -62,53 +71,58 @@ public class ImageUploadRequest<T> {
         this.fileKey = fileKey;
     }
 
-    public void setOutputClass(Class<T> outputClass) {
+    public void setOutputClass(Class outputClass) {
         this.outputClass = outputClass;
     }
 
     /**
      * 标准的Builder类
      */
-    public static class Builder<T> {
-        private ImageUploadRequest<T> request;
+    public static class Builder {
+        private ImageUploadRequest request;
 
         public Builder() {
-            request = new ImageUploadRequest<>();
+            request = new ImageUploadRequest();
         }
 
-        public Builder<T> addParam(String key, String value) {
+        public Builder addParam(String key, String value) {
             if (request.getParams() == null) request.setParams(new HashMap<String, String>());
             request.getParams().put(key, value);
             return this;
         }
 
-        public Builder<T> addFile(String key, File file) {
+        public Builder addFile(String key, File file) {
             if (request.getFiles() == null) request.setFiles(new HashMap<String, File>());
             request.getFiles().put(key, file);
             return this;
         }
 
-        public Builder<T> setOutputClass(Class<T> clz) {
+        public Builder setOutputClass(Class clz) {
             request.setOutputClass(clz);
             return this;
         }
 
-        public Builder<T> setUrl(String url) {
+        public Builder setInnerClass(Class[] clz) {
+            request.setInnerClasses(clz);
+            return this;
+        }
+
+        public Builder setUrl(String url) {
             request.setUrl(url);
             return this;
         }
 
-        public Builder<T> setFileKey(String key) {
+        public Builder setFileKey(String key) {
             request.setFileKey(key);
             return this;
         }
 
-        public Builder<T> setListener(ImageUploader.OnResponseListener listener) {
+        public Builder setListener(ImageUploader.OnResponseListener listener) {
             request.setListener(listener);
             return this;
         }
 
-        public ImageUploadRequest<T> build() {
+        public ImageUploadRequest build() {
             return request;
         }
     }
