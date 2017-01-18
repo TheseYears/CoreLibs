@@ -64,3 +64,7 @@ GalleryFinalConfigurator.config(getApplicationContext()); //初始化GalleryFina
     2. 添加RecyclerView的Header, Footer支持
     3. 扩展PTR组件 <BR/>
         * 添加对RecyclerView的支持
+* 2016-12 添加对透明状态栏的支持
+* 2017-01 
+    1. BaseRecyclerAdapter默认直接支持添加header与footer <BR/>
+    2. 重构分页方式
