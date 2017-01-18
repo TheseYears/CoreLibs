@@ -16,13 +16,17 @@
 package com.corelibs.utils.adapter.recycler;
 
 import android.content.Context;
+import android.support.v4.util.SparseArrayCompat;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.view.ViewGroup;
 
 import com.corelibs.utils.adapter.BaseAdapterHelper;
 import com.corelibs.utils.adapter.IdObject;
 import com.corelibs.utils.adapter.multi.BaseItemViewDelegate;
 import com.corelibs.utils.adapter.multi.ItemViewDelegateManager;
+import com.corelibs.views.recycler.WrapperUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +39,12 @@ import java.util.List;
  */
 public abstract class BaseRecyclerAdapter<T, H extends BaseAdapterHelper> extends RecyclerView.Adapter<H> {
 
+    private static final int BASE_ITEM_TYPE_HEADER = 100000;
+    private static final int BASE_ITEM_TYPE_FOOTER = 200000;
+
+    private SparseArrayCompat<View> mHeaderViews = new SparseArrayCompat<>();
+    private SparseArrayCompat<View> mFooterViews = new SparseArrayCompat<>();
+
     protected final Context context;
 
     protected final int layoutResId;
@@ -42,8 +52,6 @@ public abstract class BaseRecyclerAdapter<T, H extends BaseAdapterHelper> extend
     protected final List<T> data;
 
     protected final ItemViewDelegateManager<T, H> delegateManager;
-
-    protected RecyclerView.Adapter wrapper;
 
     /**
      * Create a RecyclerAdapter.
@@ -75,6 +83,10 @@ public abstract class BaseRecyclerAdapter<T, H extends BaseAdapterHelper> extend
 
     @Override
     public int getItemCount() {
+        return getHeadersCount() + getFootersCount() + getRealItemCount();
+    }
+
+    private int getRealItemCount() {
         return data == null ? 0 : data.size();
     }
 
@@ -86,28 +98,76 @@ public abstract class BaseRecyclerAdapter<T, H extends BaseAdapterHelper> extend
 
     @Override
     public int getItemViewType(int position) {
+        if (isHeaderViewPos(position)) {
+            return mHeaderViews.keyAt(position);
+        } else if (isFooterViewPos(position)) {
+            return mFooterViews.keyAt(position - getHeadersCount() - getRealItemCount());
+        }
+
         if (!hasMultiItemType())
             return super.getItemViewType(position);
-        return delegateManager.getItemViewType(data.get(position), position);
+
+        int realPosition = position - getHeadersCount();
+        return delegateManager.getItemViewType(data.get(realPosition), realPosition);
     }
 
     @Override
     public H onCreateViewHolder(ViewGroup parent, int viewType) {
+        if (mHeaderViews.get(viewType) != null) {
+            return getHeaderViewHolder(parent, mHeaderViews.get(viewType));
+        } else if (mFooterViews.get(viewType) != null) {
+            return getFooterViewHolder(parent, mFooterViews.get(viewType));
+        }
+
         return getAdapterHelper(viewType, parent);
     }
 
     @Override
     public void onBindViewHolder(H helper, int position) {
-        T item = data.get(position);
+        if (isHeaderViewPos(position)) {
+            return;
+        }
+        if (isFooterViewPos(position)) {
+            return;
+        }
+
+        int realPosition = position - getHeadersCount();
+        T item = data.get(realPosition);
 
         if (hasMultiItemType()) {
-            BaseItemViewDelegate<T, H> delegate = delegateManager.getItemViewDelegate(item, position);
+            BaseItemViewDelegate<T, H> delegate = delegateManager.getItemViewDelegate(item, realPosition);
             delegate.convert(helper, item, position);
         } else {
             convert(helper, item, position);
         }
 
         helper.setAssociatedObject(item);
+    }
+
+    @Override
+    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+        WrapperUtils.onAttachedToRecyclerView(recyclerView, new WrapperUtils.SpanSizeCallback() {
+            @Override
+            public int getSpanSize(GridLayoutManager layoutManager, GridLayoutManager.SpanSizeLookup oldLookup, int position) {
+                int viewType = getItemViewType(position);
+                if (mHeaderViews.get(viewType) != null) {
+                    return layoutManager.getSpanCount();
+                } else if (mFooterViews.get(viewType) != null) {
+                    return layoutManager.getSpanCount();
+                }
+                if (oldLookup != null)
+                    return oldLookup.getSpanSize(position);
+                return 1;
+            }
+        });
+    }
+
+    @Override
+    public void onViewAttachedToWindow(H holder) {
+        int position = holder.getLayoutPosition();
+        if (isHeaderViewPos(position) || isFooterViewPos(position)) {
+            WrapperUtils.setFullSpan(holder);
+        }
     }
 
     protected boolean hasMultiItemType() {
@@ -118,24 +178,19 @@ public abstract class BaseRecyclerAdapter<T, H extends BaseAdapterHelper> extend
         return data;
     }
 
-    /** 如果使用多层次Adapter, 请调用此方法设置根Adapter, 避免数据不一致而导致RecyclerView崩溃 **/
-    public void setWrapper(RecyclerView.Adapter wrapper) {
-        this.wrapper = wrapper;
-    }
-
     public void add(int location, T elem) {
         data.add(location, elem);
-        onNotify();
+        notifyDataSetChanged();
     }
 
     public void add(T elem) {
         data.add(elem);
-        onNotify();
+        notifyDataSetChanged();
     }
 
     public void addAll(List<T> elem) {
         data.addAll(elem);
-        onNotify();
+        notifyDataSetChanged();
     }
 
     public void set(T oldElem, T newElem) {
@@ -144,12 +199,12 @@ public abstract class BaseRecyclerAdapter<T, H extends BaseAdapterHelper> extend
 
     public void set(int index, T elem) {
         data.set(index, elem);
-        onNotify();
+        notifyDataSetChanged();
     }
 
     public void remove(int index) {
         data.remove(index);
-        onNotify();
+        notifyDataSetChanged();
     }
 
     public void replaceAll(List<T> elem) {
@@ -164,13 +219,49 @@ public abstract class BaseRecyclerAdapter<T, H extends BaseAdapterHelper> extend
     /** Clear data list */
     public void clear() {
         data.clear();
-        onNotify();
+        notifyDataSetChanged();
+    }
+    private boolean isHeaderViewPos(int position) {
+        return position < getHeadersCount();
     }
 
-    private void onNotify() {
-        if (wrapper != null) wrapper.notifyDataSetChanged();
-        else notifyDataSetChanged();
+    private boolean isFooterViewPos(int position) {
+        return position >= getHeadersCount() + getRealItemCount();
     }
+
+    public void addHeaderView(View view) {
+        mHeaderViews.put(mHeaderViews.size() + BASE_ITEM_TYPE_HEADER, view);
+        notifyDataSetChanged();
+    }
+
+    public void addFooterView(View view) {
+        mFooterViews.put(mFooterViews.size() + BASE_ITEM_TYPE_FOOTER, view);
+        notifyDataSetChanged();
+    }
+
+    public void removeHeaderView(View view) {
+        int key = mHeaderViews.indexOfValue(view);
+        mHeaderViews.remove(key);
+        notifyDataSetChanged();
+    }
+
+    public void removeFooterView(View view) {
+        int key = mFooterViews.indexOfValue(view);
+        mFooterViews.remove(key);
+        notifyDataSetChanged();
+    }
+
+    public int getHeadersCount() {
+        return mHeaderViews.size();
+    }
+
+    public int getFootersCount() {
+        return mFooterViews.size();
+    }
+
+    protected abstract H getHeaderViewHolder(ViewGroup parent, View content);
+
+    protected abstract H getFooterViewHolder(ViewGroup parent, View content);
 
     /**
      * Implement this method and use the helper to adapt the view to the given item.

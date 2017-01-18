@@ -16,6 +16,7 @@
 package com.corelibs.utils.adapter.recycler;
 
 import android.content.Context;
+import android.view.View;
 import android.view.ViewGroup;
 
 import com.corelibs.utils.adapter.BaseAdapterHelper;
@@ -50,5 +51,15 @@ public abstract class RecyclerAdapter<T> extends BaseRecyclerAdapter<T, BaseAdap
         }
 
         return BaseAdapterHelper.get(context, null, parent, res);
+    }
+
+    @Override
+    protected BaseAdapterHelper getHeaderViewHolder(ViewGroup parent, View content) {
+        return BaseAdapterHelper.get(parent.getContext(), null, parent, content);
+    }
+
+    @Override
+    protected BaseAdapterHelper getFooterViewHolder(ViewGroup parent, View content) {
+        return BaseAdapterHelper.get(parent.getContext(), null, parent, content);
     }
 }

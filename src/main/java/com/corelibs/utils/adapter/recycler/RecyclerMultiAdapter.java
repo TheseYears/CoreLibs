@@ -16,6 +16,7 @@
 package com.corelibs.utils.adapter.recycler;
 
 import android.content.Context;
+import android.view.View;
 import android.view.ViewGroup;
 
 import com.corelibs.utils.adapter.BaseAdapterHelper;
@@ -45,6 +46,16 @@ public class RecyclerMultiAdapter<T> extends BaseRecyclerAdapter<T, BaseAdapterH
     protected BaseAdapterHelper getAdapterHelper(int viewType, ViewGroup parent) {
         BaseItemViewDelegate<T, BaseAdapterHelper> delegate = delegateManager.getItemViewDelegate(viewType);
         return BaseAdapterHelper.get(context, null, parent, delegate.getItemViewLayoutId());
+    }
+
+    @Override
+    protected BaseAdapterHelper getHeaderViewHolder(ViewGroup parent, View content) {
+        return BaseAdapterHelper.get(parent.getContext(), null, parent, content);
+    }
+
+    @Override
+    protected BaseAdapterHelper getFooterViewHolder(ViewGroup parent, View content) {
+        return BaseAdapterHelper.get(parent.getContext(), null, parent, content);
     }
 
     public void addItemViewDelegate(BaseItemViewDelegate<T, BaseAdapterHelper> itemViewDelegate) {

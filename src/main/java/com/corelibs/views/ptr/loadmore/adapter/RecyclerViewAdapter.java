@@ -5,8 +5,8 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
 
+import com.corelibs.utils.adapter.recycler.BaseRecyclerAdapter;
 import com.corelibs.views.ptr.loadmore.OnScrollListener;
-import com.corelibs.views.recycler.AbstractHeaderAndFooterWrapper;
 
 /**
  * 针对RecyclerView或继承自RecyclerView的控件的适配类
@@ -24,16 +24,16 @@ public class RecyclerViewAdapter<T extends RecyclerView>
 
     @Override
     public void addFooterView(View v, Object data, boolean isSelectable) {
-        AbstractHeaderAndFooterWrapper adapter =
-                (AbstractHeaderAndFooterWrapper) recyclerView.getAdapter();
-        adapter.addFootView(v);
+        BaseRecyclerAdapter adapter =
+                (BaseRecyclerAdapter) recyclerView.getAdapter();
+        adapter.addFooterView(v);
     }
 
     @Override
     public boolean removeFooterView(View v) {
-        AbstractHeaderAndFooterWrapper adapter =
-                (AbstractHeaderAndFooterWrapper) recyclerView.getAdapter();
-        adapter.removeFootView(v);
+        BaseRecyclerAdapter adapter =
+                (BaseRecyclerAdapter) recyclerView.getAdapter();
+        adapter.removeFooterView(v);
         return true;
     }
 
@@ -73,5 +73,10 @@ public class RecyclerViewAdapter<T extends RecyclerView>
     @Override
     public T getView() {
         return recyclerView;
+    }
+
+    @Override
+    public boolean addFooterAtInit() {
+        return false;
     }
 }
