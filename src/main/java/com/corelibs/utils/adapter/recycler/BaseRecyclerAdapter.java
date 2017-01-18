@@ -24,9 +24,9 @@ import android.view.ViewGroup;
 
 import com.corelibs.utils.adapter.BaseAdapterHelper;
 import com.corelibs.utils.adapter.IdObject;
+import com.corelibs.utils.adapter.WrapperUtils;
 import com.corelibs.utils.adapter.multi.BaseItemViewDelegate;
 import com.corelibs.utils.adapter.multi.ItemViewDelegateManager;
-import com.corelibs.views.recycler.WrapperUtils;
 
 import java.util.ArrayList;
 import java.util.List;

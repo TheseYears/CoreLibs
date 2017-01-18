@@ -6,9 +6,7 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.ViewGroup;
 
 public class WrapperUtils {
-    public static void onAttachedToRecyclerView(RecyclerView.Adapter innerAdapter, RecyclerView recyclerView, final SpanSizeCallback callback) {
-        innerAdapter.onAttachedToRecyclerView(recyclerView);
-
+    public static void onAttachedToRecyclerView(RecyclerView recyclerView, final SpanSizeCallback callback) {
         RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
         if (layoutManager instanceof GridLayoutManager) {
             final GridLayoutManager gridLayoutManager = (GridLayoutManager) layoutManager;

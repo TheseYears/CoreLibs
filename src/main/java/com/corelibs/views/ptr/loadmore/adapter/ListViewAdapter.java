@@ -51,4 +51,9 @@ public class ListViewAdapter<T extends ListView> implements LoadMoreAdapter<T> {
     public T getView() {
         return listView;
     }
+
+    @Override
+    public boolean addFooterAtInit() {
+        return true;
+    }
 }

@@ -3,4 +3,5 @@
     <item name="image" type="id"/>
     <item name="delete" type="id"/>
     <item name="adapter_item_tag_key" type="id" />
+    <item name="nav_status_bar" type="id"/>
 </resources>

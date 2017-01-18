@@ -31,4 +31,9 @@ public interface LoadMoreAdapter<T extends ViewGroup> {
      * 获取被包装的View
      */
     T getView();
+    /**
+     * 是否要在初始化的时候就添加footer view，以适应不同控件。如Grid/List在初始化的时候不添加footer
+     * 会报已设置adapter的错，recycler则不能在初始化的时候添加。
+     */
+    boolean addFooterAtInit();
 }

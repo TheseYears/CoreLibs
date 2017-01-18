@@ -51,4 +51,9 @@ public class GridViewAdapter<T extends GridViewWithHeaderAndFooter> implements L
     public T getView() {
         return gridView;
     }
+
+    @Override
+    public boolean addFooterAtInit() {
+        return true;
+    }
 }
