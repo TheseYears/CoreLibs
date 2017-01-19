@@ -23,9 +23,10 @@ public abstract class PaginationSubscriber<T> extends ResponseSubscriber<T> {
     public void success(T t) {
         if (t instanceof ResponseHandler.IBaseData) {
             ResponseHandler.IBaseData data = (ResponseHandler.IBaseData) t;
-            Object condition = getCondition(t, checkDataNotNull(data));
-            if (bridge != null) bridge.setCondition(condition);
             if (checkDataNotNull(data) && checkListNotNull(getListResult(t, checkDataNotNull(data)))) {
+                Object condition = getCondition(t, checkDataNotNull(data));
+                if (bridge != null) bridge.setCondition(condition);
+
                 view.hideEmptyHint();
                 onDataNotNull(t);
             } else {
