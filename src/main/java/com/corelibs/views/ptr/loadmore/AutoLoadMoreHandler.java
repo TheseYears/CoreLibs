@@ -2,6 +2,7 @@ package com.corelibs.views.ptr.loadmore;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,14 +63,14 @@ public class AutoLoadMoreHandler<H extends ViewGroup, T extends LoadMoreAdapter<
     }
 
     private void init() {
-        initLoadingView();
+        if (adapter.addFooterAtInit()) initLoadingView();
         adapter.setOnScrollListener(new OnScrollListener<H>() {
             @Override public void onScroll(H view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
                 if (scrollListener != null) scrollListener.onScroll(view, firstVisibleItem, visibleItemCount, totalItemCount);
                 if (state != State.DISABLED && state != State.REFRESHING
                         && state != State.FORCE_REFRESH && !ptrFrameLayout.isRefreshing()) {
                     if (visibleItemCount < totalItemCount) {
-                        if (totalItemCount > 0)
+                        if (visibleItemCount > 0 && totalItemCount > 0)
                             if (aboutToLoad(firstVisibleItem + visibleItemCount - 1))
                                 setLoadingStatus();
                     }
@@ -85,9 +86,9 @@ public class AutoLoadMoreHandler<H extends ViewGroup, T extends LoadMoreAdapter<
             loadingContent = loadingView.findViewById(R.id.content);
             loadingLabel = (TextView) loadingView.findViewById(R.id.loadingText);
             progress = (CircularBar) loadingView.findViewById(R.id.progress);
-        }
 
-        adapter.addFooterView(loadingView, null, false);
+            adapter.addFooterView(loadingView, null, false);
+        }
         loadingContent.setVisibility(View.GONE);
     }
 
@@ -100,6 +101,8 @@ public class AutoLoadMoreHandler<H extends ViewGroup, T extends LoadMoreAdapter<
     }
 
     private void load() {
+        if (loadingView == null) initLoadingView();
+
         switch (state) {
             case ENABLED:
                 break;
