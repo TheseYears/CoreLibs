@@ -57,14 +57,15 @@ GalleryFinalConfigurator.config(getApplicationContext()); //初始化GalleryFina
 * 2016-04 完善 [文档](https://www.gitbook.com/book/theseyears/android-architecture-journey)
 * 2016-09-07 添加Studio插件 [MvpClassesGenerator](https://github.com/TheseYears/MvpClassesGenerator)
 * 2016-09-22 
-    1. 扩展Adapter相关工具类 <BR/>
+    * 扩展Adapter相关工具类 <BR/>
         * 添加多布局支持
         * 添加RecyclerView支持
         * 添加RecyclerView的多布局支持
-    2. 添加RecyclerView的Header, Footer支持
-    3. 扩展PTR组件 <BR/>
+    * 添加RecyclerView的Header, Footer支持
+    * 扩展PTR组件 <BR/>
         * 添加对RecyclerView的支持
 * 2016-12 添加对透明状态栏的支持
 * 2017-01 
-    1. BaseRecyclerAdapter默认直接支持添加header与footer <BR/>
-    2. 重构分页方式 需要使用新的[MvpClassesGenerator］(https://github.com/TheseYears/MvpClassesGenerator/blob/master/MvpClassesGenerator.jar)
+    * BaseRecyclerAdapter默认直接支持添加header与footer <BR/>
+    * 重构分页方式
+    * 需要使用新的 [MvpClassesGenerator］(https://github.com/TheseYears/MvpClassesGenerator/blob/master/MvpClassesGenerator.jar) 插件
