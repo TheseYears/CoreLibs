@@ -14,6 +14,10 @@ import android.widget.FrameLayout;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
+/**
+ * 用于解决Activity在全屏下，同时windowSoftInputMode为adjustResize时，软键盘弹起却不会Resize布局的情况。<BR />
+ * 使用方法：在设置了content view的Activity中调用AndroidBug5497Workaround.assistActivity(activity);
+ */
 public class AndroidBug5497Workaround {
     // For more information, see https://code.google.com/p/android/issues/detail?id=5497
     // To use this class, simply invoke assistActivity() on an Activity that already has its content view set.
@@ -48,6 +52,9 @@ public class AndroidBug5497Workaround {
         }
     }
 
+    /**
+     * 用于解决Activity在全屏下，同时windowSoftInputMode为adjustResize时，软键盘弹起却不会Resize布局的情况。
+     */
     public static void assistActivity(Activity activity) {
         new AndroidBug5497Workaround(activity, true);
     }

@@ -2,10 +2,17 @@ package com.corelibs.pagination.strategy;
 
 import com.corelibs.pagination.core.PaginationStrategy;
 
+/**
+ * 根据页数分页。需要传入int类型的pageCount作为分页条件。<BR />
+ * 具体算法：如果当前页数小于总页数则可以获取下一页。
+ */
 public class PageStrategy implements PaginationStrategy {
 
     protected Page page = new Page(1, 15, -1);
 
+    /**
+     * 获取当前每页个数
+     */
     public void setPageSize(int size) {
         page.pageSize = size;
     }

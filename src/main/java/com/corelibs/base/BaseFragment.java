@@ -169,6 +169,9 @@ public abstract  class BaseFragment<V extends BaseView, T extends BasePresenter<
         return null;
     }
 
+    /**
+     * 设置全屏模式，并将状态栏设置为透明，支持4.4及以上系统
+     */
     protected void setTranslucentStatusBar() {
         if (getActivity() instanceof BaseActivity) ((BaseActivity)getActivity()).setTranslucentStatusBar();
     }

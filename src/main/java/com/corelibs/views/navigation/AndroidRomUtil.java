@@ -5,6 +5,9 @@ import android.os.Build;
 import java.io.IOException;
 import java.lang.reflect.Method;
 
+/**
+ * 获取系统Rom工具，支持识别华为小米以及魅族
+ */
 public class AndroidRomUtil {
 
     private static final String KEY_EMUI_VERSION_CODE = "ro.build.version.emui";

@@ -184,6 +184,9 @@ public abstract class BaseActivity<V extends BaseView, T extends BasePresenter<V
         return null;
     }
 
+    /**
+     * 设置全屏模式，并将状态栏设置为透明，支持4.4及以上系统
+     */
     protected void setTranslucentStatusBar() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
@@ -198,18 +201,27 @@ public abstract class BaseActivity<V extends BaseView, T extends BasePresenter<V
         }
     }
 
+    /**
+     * 设置状态栏为浅色模式，状态栏上的图标都会变为深色。仅支持6.0及以上系统
+     */
     protected void setLightStatusBar() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         }
     }
 
+    /**
+     * 设置全屏模式
+     */
     protected void setFullScreen() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
         }
     }
 
+    /**
+     * 设置系统状态颜色，仅支持6.0及以上系统
+     */
     protected void setStatusBarColor(int color) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             getWindow().setStatusBarColor(color);

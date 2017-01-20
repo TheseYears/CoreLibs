@@ -15,6 +15,15 @@ import java.lang.reflect.Field;
 
 import butterknife.ButterKnife;
 
+/**
+ * 用于适配沉浸式状态栏的控件。<BR />
+ * 1. 在manifest中的application节点里，设置theme属性为CoreLibs的AppBaseCompactTheme<BR />
+ * 2. 在activity里调用setTranslucentStatusBar()方法，默认已调用，无需额外调用<BR />
+ * 3. 自定义一个标题栏并继承此类，覆写构造方法以及{@link #getLayoutId()}和{@link #initView()}<BR />
+ * 4. 使用自定义好的标题栏即可，注意布局根节点不能使用fitSystemWindows＝“true”
+ * 5. 通过一系列setXxxColor来设置标题栏和状态栏的颜色或者背景
+ * 6. 如布局用有EditText，请参考{@link AndroidBug5497Workaround}
+ */
 public abstract class TranslucentNavBar extends RelativeLayout {
 
     protected View statusBar, contentView;
@@ -35,47 +44,80 @@ public abstract class TranslucentNavBar extends RelativeLayout {
         init();
     }
 
+    /**
+     * 将标题栏与状态栏都设置为透明
+     */
     public void setTransparentColor() {
         setColor(0x00000000);
     }
 
+    /**
+     * 将标题栏与状态栏都设置为给定的颜色值
+     */
     public void setColor(int color) {
         setNavColor(color);
         setStatusBarColor(color);
     }
 
+    /**
+     * 将标题栏与状态栏都设置为给定的颜色资源
+     */
     public void setColorRes(int color) {
         setNavColorRes(color);
         setStatusBarColorRes(color);
     }
 
+    /**
+     * 将标题栏设置为给定的颜色值
+     */
     public void setNavColor(int color) {
         contentView.setBackgroundColor(color);
     }
 
+    /**
+     * 将标题栏设置为给定的颜色资源
+     */
     public void setNavColorRes(int res) {
         setNavColor(ContextCompat.getColor(getContext(), res));
     }
 
+    /**
+     * 将状态栏设置为给定的颜色值
+     */
     public void setStatusBarColor(int color) {
         statusBar.setBackgroundColor(color);
     }
 
+    /**
+     * 将状态栏设置为给定的颜色资源
+     */
     public void setStatusBarColorRes(int res) {
         setStatusBarColor(ContextCompat.getColor(getContext(), res));
     }
 
+    /**
+     * 将标题栏与状态栏都设置为给定的图片背景
+     */
     public void setImageBackground(int res) {
         imageBg.setVisibility(VISIBLE);
         imageBg.setImageResource(res);
     }
 
+    /**
+     * 设置图片背景的缩放方式
+     */
     public void setImageBackgroundScaleType(ImageView.ScaleType scaleType) {
         imageBg.setScaleType(scaleType);
     }
 
+    /**
+     * 设置标题栏布局id
+     */
     protected abstract int getLayoutId();
 
+    /**
+     * 初始化控件
+     */
     protected abstract void initView();
 
     private void init() {
