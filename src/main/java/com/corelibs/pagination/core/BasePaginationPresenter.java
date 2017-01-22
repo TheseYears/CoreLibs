@@ -25,9 +25,9 @@ public abstract class BasePaginationPresenter<T extends BasePaginationView>
     }
 
     /**
-     * 操作Page对象进行分页, 仅对当前页码, 每页数据个数, 总页数做操作, 具体页面效果需自行实现
+     * 分页操作, 具体页面效果需自行实现
      * @param reload 是否是刷新操作, true为刷新, false则为加载下一页
-     * @return 分页是否成功, 当当前页码超过总页数时会返回false
+     * @return 分页是否成功
      */
     public boolean doPagination(boolean reload) {
         boolean can = strategy.canDoPagination(reload);
