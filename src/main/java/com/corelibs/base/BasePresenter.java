@@ -101,4 +101,18 @@ public abstract class BasePresenter<T extends BaseView> {
     protected <T> T getApi(Class<T> clz) {
         return ApiFactory.getFactory().create(clz);
     }
+
+    /**
+     * 获取Retrofit Api接口
+     */
+    protected <T> T getApi(int key, Class<T> clz) {
+        return ApiFactory.getFactory().create(key, clz);
+    }
+
+    /**
+     * 获取Retrofit Api接口
+     */
+    protected <T> T getApi(String key, Class<T> clz) {
+        return ApiFactory.getFactory().create(key, clz);
+    }
 }
