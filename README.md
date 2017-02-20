@@ -26,7 +26,7 @@ allprojects {
 ````
 GlobalExceptionHandler.getInstance().init(this, getResources().getString(R.string.app_name)); //初始化全局异常捕获
 ToastMgr.init(getApplicationContext()); //初始化Toast管理器
-RetrofitFactory.init(Urls.ROOT_API); //初始化Retrofit接口工厂
+ApiFactory.getFactory().add(Urls.ROOT_API); //初始化Retrofit接口工厂
 PreferencesHelper.init(getApplicationContext()); //初始化SharedPreferences工具类
 Configuration.enableLoggingNetworkParams(); //打开网络请求Log打印
 FileDownloader.init(getApplicationContext()); //初始化下载工具
