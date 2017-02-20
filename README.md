@@ -32,7 +32,7 @@ Configuration.enableLoggingNetworkParams(); //打开网络请求Log打印
 FileDownloader.init(getApplicationContext()); //初始化下载工具
 GalleryFinalConfigurator.config(getApplicationContext()); //初始化GalleryFinal
 ````
-* 根据服务器接口返回JSON的结构, 新建一个实体类, 并集成IBaseData.
+* 根据服务器接口返回JSON的结构, 新建一个实体类, 并实现IBaseData.
 * 根据需要项目的主题可以使用CoreLibs中的AppBaseCompactTheme.
 * 如果在Application中初始化了GlobalExceptionHandler还需要在Manifest中加入如下声明:
 
