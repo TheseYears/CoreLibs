@@ -3,14 +3,25 @@ package com.corelibs.api;
 import android.text.TextUtils;
 
 import com.corelibs.common.Configuration;
+import com.google.gson.FieldNamingPolicy;
+import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.InstanceCreator;
 import com.google.gson.TypeAdapter;
+import com.google.gson.TypeAdapterFactory;
+import com.google.gson.internal.ConstructorConstructor;
+import com.google.gson.internal.Excluder;
+import com.google.gson.internal.bind.JsonAdapterAnnotationTypeAdapterFactory;
+import com.google.gson.internal.bind.ReflectiveTypeAdapterFactory;
 import com.google.gson.internal.bind.TypeAdapters;
+import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.Collections;
 import java.util.HashMap;
 
 import okhttp3.OkHttpClient;
@@ -38,6 +49,7 @@ public class ApiFactory {
 
     private static ApiFactory factory;
     private HashMap<String, Retrofit> retrofitMap = new HashMap<>();
+    private static final boolean IS_ADAPT_GSON_OBJECT_STRING_EXCEPTION = false;
 
     public static ApiFactory getFactory() {
         if (factory == null) {
@@ -172,6 +184,15 @@ public class ApiFactory {
         gsonBuilder.registerTypeAdapterFactory(TypeAdapters.newFactory(long.class, Long.class, LONG));
         gsonBuilder.registerTypeAdapterFactory(TypeAdapters.newFactory(int.class, Integer.class, INT));
 
+        // 避免当数据类型为OBJECT时，接口返回""会报错的情况。默认关闭，还需完善。
+        if (IS_ADAPT_GSON_OBJECT_STRING_EXCEPTION) {
+            ConstructorConstructor constructor =
+                    new ConstructorConstructor(Collections.<Type, InstanceCreator<?>>emptyMap());
+            gsonBuilder.registerTypeAdapterFactory(new ObjectTypeAdapterFactory(new ReflectiveTypeAdapterFactory(
+                    constructor, FieldNamingPolicy.IDENTITY, Excluder.DEFAULT,
+                    new JsonAdapterAnnotationTypeAdapterFactory(constructor))));
+        }
+
         builder.baseUrl(baseUrl)
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create(gsonBuilder.create()));
@@ -186,4 +207,49 @@ public class ApiFactory {
 
         return builder.build();
     }
+
+    /**
+     * ReflectiveTypeAdapterFactory代理，加入自己的解析逻辑
+     */
+    private final class ObjectTypeAdapterFactory implements TypeAdapterFactory {
+        private final ReflectiveTypeAdapterFactory delegate;
+
+        ObjectTypeAdapterFactory(ReflectiveTypeAdapterFactory delegate) {
+            this.delegate = delegate;
+        }
+
+        public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> typeToken) {
+            // 还需要排除更多的类型..
+            if (String.class.isAssignableFrom(typeToken.getRawType()) ||
+                    StringBuilder.class.isAssignableFrom(typeToken.getRawType()) ||
+                    StringBuffer.class.isAssignableFrom(typeToken.getRawType()) ||
+                    !Object.class.isAssignableFrom(typeToken.getRawType())) {
+                return null;
+            }
+            return new Adapter<>(delegate.create(gson, typeToken));
+        }
+
+        private final class Adapter<E> extends TypeAdapter<E> {
+            private final TypeAdapter<E> delegate;
+
+            Adapter(TypeAdapter<E> delegate) {
+                this.delegate = delegate;
+            }
+
+            @Override
+            public E read(JsonReader in) throws IOException {
+                if (in.peek() == JsonToken.STRING) {
+                    in.nextString();
+                    return null;
+                }
+                return delegate.read(in);
+            }
+
+            @Override
+            public void write(JsonWriter out, E value) throws IOException {
+                delegate.write(out, value);
+            }
+        }
+    }
+
 }
