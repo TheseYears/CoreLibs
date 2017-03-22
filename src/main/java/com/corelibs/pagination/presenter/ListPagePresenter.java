@@ -2,6 +2,7 @@ package com.corelibs.pagination.presenter;
 
 import com.corelibs.base.BasePaginationView;
 import com.corelibs.pagination.StrategyFactory;
+import com.corelibs.pagination.strategy.ListResultStrategy;
 
 /**
  * 此类使用{@link com.corelibs.pagination.strategy.ListResultStrategy}分页。
@@ -11,7 +12,25 @@ import com.corelibs.pagination.StrategyFactory;
  */
 public abstract class ListPagePresenter<T extends BasePaginationView> extends PagePresenter<T> {
 
+    private ListResultStrategy pageStrategy;
+
     public ListPagePresenter() {
         setPaginationStrategy(StrategyFactory.getStrategy(StrategyFactory.ListResultStrategy));
+        pageStrategy = (ListResultStrategy) strategy;
+    }
+
+    /** 获取当前页数下标 **/
+    public int getPageNo() {
+        return pageStrategy.getCondition().getPageNo();
+    }
+
+    /** 获取当前每页个数 **/
+    public int getPageSize() {
+        return pageStrategy.getCondition().getPageSize();
+    }
+
+    /** 设置每页个数 **/
+    public void setPageSize(int size) {
+        pageStrategy.setPageSize(size);
     }
 }

@@ -40,8 +40,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * ApiFactory.getFactory().create(ProductApi.class);
  *
  * ApiFactory.getFactory().add("dev", baseUrl);
- * ApiFactory.getFactory().create("dev", ApProductApi.class);
- * ApiFactory.getFactory().create(1, ApProductApi.class);
+ * ApiFactory.getFactory().create("dev", ProductApi.class);
+ * ApiFactory.getFactory().create(1, ProductApi.class);
  * </pre>
  * Created by Ryan on 2015/12/30.
  */
