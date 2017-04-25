@@ -126,11 +126,11 @@ public class PtrLollipopLayout<T> extends PtrFrameLayout implements PtrHandler {
 	}
 
     public void complete() {
-		post(new Runnable() {
+		postDelayed(new Runnable() {
 			@Override public void run() {
 				refreshComplete();
 			}
-		});
+		}, 300);
     }
 
 	/**
