@@ -7,6 +7,10 @@ import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.InstanceCreator;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
 import com.google.gson.TypeAdapter;
 import com.google.gson.TypeAdapterFactory;
 import com.google.gson.internal.ConstructorConstructor;
@@ -21,6 +25,7 @@ import com.google.gson.stream.JsonWriter;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.sql.Timestamp;
 import java.util.Collections;
 import java.util.HashMap;
 
@@ -183,6 +188,14 @@ public class ApiFactory {
         gsonBuilder.registerTypeAdapterFactory(TypeAdapters.newFactory(double.class, Double.class, DOUBLE));
         gsonBuilder.registerTypeAdapterFactory(TypeAdapters.newFactory(long.class, Long.class, LONG));
         gsonBuilder.registerTypeAdapterFactory(TypeAdapters.newFactory(int.class, Integer.class, INT));
+
+        gsonBuilder.registerTypeAdapter(Timestamp.class, new JsonDeserializer<Timestamp>() {
+            @Override
+            public Timestamp deserialize(JsonElement json, Type typeOfT,
+                                         JsonDeserializationContext context) throws JsonParseException {
+                return new Timestamp(json.getAsJsonPrimitive().getAsLong());
+            }
+        });
 
         // 避免当数据类型为OBJECT时，接口返回""会报错的情况。默认关闭，还需完善。
         if (IS_ADAPT_GSON_OBJECT_STRING_EXCEPTION) {

@@ -28,7 +28,7 @@ public class ImageUploadHelper<T> {
     public static final String IMAGE_CACHE_FOLDER = "ImageUploaderCache";
     public static final String IMAGE_BASE_NAME = "tmp";
     public static final String IMAGE_BASE_TYPE = ".jpeg";
-    public static final int IMAGE_MAX_SIZE = 720;
+    public static final int IMAGE_MAX_SIZE = 1080;
 
     private ImageUploader uploader;
     private Gson gson;
@@ -75,8 +75,13 @@ public class ImageUploadHelper<T> {
     }
 
     public static File bitmapToFile(Context context, Bitmap bmp) throws IOException {
-        String imageCachePath = context.getCacheDir() + IMAGE_CACHE_FOLDER;
-        String filename = IMAGE_BASE_NAME + System.currentTimeMillis() + IMAGE_BASE_TYPE;
+        return bitmapToFile(context, bmp, Bitmap.CompressFormat.JPEG);
+    }
+
+    public static File bitmapToFile(Context context, Bitmap bmp, Bitmap.CompressFormat format)
+            throws IOException {
+        String imageCachePath = context.getExternalCacheDir() + File.separator + IMAGE_CACHE_FOLDER;
+        String filename = File.separator + IMAGE_BASE_NAME + System.currentTimeMillis() + IMAGE_BASE_TYPE;
         File file = new File(imageCachePath + filename);
         if (!file.exists()) {
             File dir = new File(imageCachePath);
@@ -85,7 +90,6 @@ public class ImageUploadHelper<T> {
             }
             if (!file.createNewFile()) ToastMgr.show("创建图片文件失败");
         }
-        Bitmap.CompressFormat format = Bitmap.CompressFormat.JPEG;
         int quality = 100;
         OutputStream stream = null;
         try {
@@ -154,7 +158,7 @@ public class ImageUploadHelper<T> {
     public static void clearCache(final Context context) {
         new Thread(new Runnable() {
             @Override public void run() {
-                String imageCachePath = context.getCacheDir() + IMAGE_CACHE_FOLDER;
+                String imageCachePath = context.getExternalCacheDir() + File.separator + IMAGE_CACHE_FOLDER;
                 File dir = new File(imageCachePath);
                 String[] tmp = dir.list();
                 for (String path : tmp) {

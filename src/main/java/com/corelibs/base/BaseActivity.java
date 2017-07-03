@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
@@ -106,7 +107,8 @@ public abstract class BaseActivity<V extends BaseView, T extends BasePresenter<V
     }
 
     public String getText(TextView editText) {
-        return editText.getText().toString().trim();
+        String text = editText.getText().toString().trim();
+        return TextUtils.isEmpty(text) ? null : text;
     }
 
     public void call(String tel) {

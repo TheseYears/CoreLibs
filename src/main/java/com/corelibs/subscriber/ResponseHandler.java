@@ -104,6 +104,10 @@ public class ResponseHandler<T> {
             view.showToastMessage(message);
     }
 
+    public BaseView getView() {
+        return view;
+    }
+
     public interface CustomHandler<T> {
         /**
          * 请求成功同时业务成功的情况下会调用此函数

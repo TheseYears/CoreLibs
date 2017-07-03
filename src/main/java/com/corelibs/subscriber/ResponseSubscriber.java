@@ -78,4 +78,8 @@ public abstract class ResponseSubscriber<T> extends Subscriber<T>
     public boolean autoHideLoading() {
         return true;
     }
+
+    protected BaseView getView() {
+        return handler.getView();
+    }
 }

@@ -32,7 +32,7 @@ public class MultiZoomImageActivity extends BaseActivity implements View.OnClick
     private ViewPager vp_ads;
     private LinearLayout ll_dots;
     private List<String> images;
-    private List<ZoomImageView> imageViews;
+    private List<PinchImageView> imageViews;
     private List<View> dots;
 
     private int position;
@@ -113,7 +113,7 @@ public class MultiZoomImageActivity extends BaseActivity implements View.OnClick
         }
 
         for (int i = 0; i < count; i++) {
-            ZoomImageView imageView = new ZoomImageView(this);
+            PinchImageView imageView = new PinchImageView(this);
             Glide.with(this).load(images.get(i)).into(imageView);
             imageView.setOnClickListener(this);
             imageViews.add(imageView);

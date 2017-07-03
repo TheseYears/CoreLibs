@@ -15,6 +15,7 @@ public class RequestBodyCreator {
     }
 
     public static RequestBody create(String string) {
+        if (string == null) string = "";
         return RequestBody.create(MediaType.parse(TYPE_DEFAULT), string);
     }
 }

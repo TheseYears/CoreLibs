@@ -34,7 +34,7 @@ import rx.Observable;
  * <br/>
  * Created by Ryan on 2016/1/5.
  */
-public abstract  class BaseFragment<V extends BaseView, T extends BasePresenter<V>>
+public abstract class BaseFragment<V extends BaseView, T extends BasePresenter<V>>
         extends RxFragment implements BaseView {
 
     private View parentView;
