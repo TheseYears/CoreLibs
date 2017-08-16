@@ -3,20 +3,19 @@ package com.corelibs.base;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 
-import com.trello.rxlifecycle.ActivityEvent;
-import com.trello.rxlifecycle.FragmentEvent;
-import com.trello.rxlifecycle.components.support.RxFragment;
+import com.trello.rxlifecycle2.LifecycleTransformer;
+import com.trello.rxlifecycle2.android.ActivityEvent;
+import com.trello.rxlifecycle2.android.FragmentEvent;
+import com.trello.rxlifecycle2.components.support.RxFragment;
 
 import butterknife.ButterKnife;
-import rx.Observable;
+
 
 /**
  * Fragment基类, 继承自此类的Fragment需要实现{@link #getLayoutId}, {@link #init}
@@ -154,19 +153,20 @@ public abstract class BaseFragment<V extends BaseView, T extends BasePresenter<V
         return getActivity();
     }
 
+
     @Override
-    public <V> Observable.Transformer<V, V> bind() {
+    public  <T> LifecycleTransformer<T> bind() {
         return bindToLifecycle();
     }
 
     @Override
-    public <V> Observable.Transformer<V, V> bindUntil(FragmentEvent event) {
-        return bindUntilEvent(event);
+    public  <T> LifecycleTransformer<T> bindUntil(ActivityEvent event) {
+        return null;
     }
 
     @Override
-    public <V> Observable.Transformer<V, V> bindUntil(ActivityEvent event) {
-        return null;
+    public  <T> LifecycleTransformer<T> bindUntil(FragmentEvent event) {
+        return bindUntilEvent(event);
     }
 
     /**

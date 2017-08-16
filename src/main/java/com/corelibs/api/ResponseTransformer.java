@@ -1,33 +1,29 @@
 package com.corelibs.api;
 
-import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
+
+import com.trello.rxlifecycle2.LifecycleTransformer;
+
+import org.reactivestreams.Publisher;
+
+import io.reactivex.Flowable;
+import io.reactivex.FlowableTransformer;
+import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
+import io.reactivex.ObservableTransformer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.schedulers.Schedulers;
+import io.reactivex.subscribers.SafeSubscriber;
 
 /**
  * 用于对网络请求的Observable做转换.
- * <br/>
- * 配合{@link BaseRxPresenter#bindLifeCycle()}一起使用
- * 可以将原始Observable绑定至Activity/Fragment生命周期, 同时声明在IO线程运行, 在main线程接收.
- * <br/>
  * Created by Ryan on 2015/12/30.
  */
-public class ResponseTransformer<T> implements Observable.Transformer<T, T> {
-
-    private Observable.Transformer<T, T> transformer;
-
-    public ResponseTransformer() {}
-
-    public ResponseTransformer(Observable.Transformer<T, T> t) {
-        transformer = t;
-    }
+public class ResponseTransformer<T> implements FlowableTransformer<T, T> {
 
     @Override
-    public Observable<T> call(Observable<T> source) {
-        if(transformer != null)
-            return transformer.call(source).subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread());
-        else
+    public Publisher<T> apply(@NonNull Flowable<T> source) {
+
             return source.subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread());
     }

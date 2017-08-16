@@ -16,8 +16,12 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Map;
 
-import rx.Observable;
-import rx.Subscriber;
+import io.reactivex.BackpressureStrategy;
+import io.reactivex.Flowable;
+import io.reactivex.FlowableEmitter;
+import io.reactivex.FlowableOnSubscribe;
+import io.reactivex.annotations.NonNull;
+
 
 /**
  * 通过{@link ImageUploader} 与 {@link ImageUploadRequest} 来上传图片.
@@ -48,32 +52,32 @@ public class ImageUploadHelper<T> {
                 request.getFileKey(), request.getListener());
     }
 
-    public Observable<T> doPostWithObservable(final ImageUploadRequest request) {
-        return Observable.create(new Observable.OnSubscribe<T>() {
+    public Flowable<T> doPostWithObservable(final ImageUploadRequest request) {
+        return Flowable.create(new FlowableOnSubscribe<T>() {
             @Override
-            public void call(final Subscriber<? super T> subscriber) {
+            public void subscribe(@NonNull final FlowableEmitter<T> subscriber) throws Exception {
                 uploader.post(request.getUrl(), request.getParams(), request.getFiles(),
                         request.getFileKey(), new ImageUploader.OnResponseListener() {
-                    @Override @SuppressWarnings("unchecked")
-                    public void onResponse(String data) {
-                        if (request.getInnerClasses() == null || request.getInnerClasses().length <= 0)
-                            subscriber.onNext((T) gson.fromJson(data, request.getOutputClass()));
-                        else
-                            subscriber.onNext((T) gson.fromJson(data, ParameterizedTypeImpl
-                                    .get(request.getOutputClass(), request.getInnerClasses())));
+                            @Override
+                            @SuppressWarnings("unchecked")
+                            public void onResponse(String data) {
+                                if (request.getInnerClasses() == null || request.getInnerClasses().length <= 0)
+                                    subscriber.onNext((T) gson.fromJson(data, request.getOutputClass()));
+                                else
+                                    subscriber.onNext((T) gson.fromJson(data, ParameterizedTypeImpl
+                                            .get(request.getOutputClass(), request.getInnerClasses())));
 
-                        subscriber.onCompleted();
-                    }
+                                subscriber.onComplete();
+                            }
 
-                    @Override
-                    public void onError(Exception e) {
-                        subscriber.onError(e);
-                    }
-                });
+                            @Override
+                            public void onError(Exception e) {
+                                subscriber.onError(e);
+                            }
+                        });
             }
-        });
+        },BackpressureStrategy.DROP);
     }
-
     public static File bitmapToFile(Context context, Bitmap bmp) throws IOException {
         return bitmapToFile(context, bmp, Bitmap.CompressFormat.JPEG);
     }

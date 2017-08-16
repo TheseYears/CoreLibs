@@ -31,7 +31,7 @@ import java.util.HashMap;
 
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
@@ -207,7 +207,7 @@ public class ApiFactory {
         }
 
         builder.baseUrl(baseUrl)
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create(gsonBuilder.create()));
 
         OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder();
