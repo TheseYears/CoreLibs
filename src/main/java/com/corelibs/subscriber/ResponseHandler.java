@@ -8,7 +8,8 @@ import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.util.List;
 
-import retrofit2.adapter.rxjava.HttpException;
+import retrofit2.HttpException;
+
 
 /**
  * 网络结果处理类, 此类会判断网络错误与业务错误.

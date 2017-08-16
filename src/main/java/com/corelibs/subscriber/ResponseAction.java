@@ -3,7 +3,8 @@ package com.corelibs.subscriber;
 import com.corelibs.base.BaseView;
 import com.corelibs.subscriber.ResponseHandler.IBaseData;
 
-import rx.functions.Func1;
+import io.reactivex.functions.Function;
+
 
 /**
  * 适用于一个网络请求依赖于另一个网络请求结果的情况.
@@ -16,7 +17,7 @@ import rx.functions.Func1;
  * 并且返回true.
  *
  */
-public abstract class ResponseAction<T, R> implements Func1<T, R>,
+public abstract class ResponseAction<T, R> implements Function<T, R>,
         ResponseHandler.CustomHandler<T> {
 
     private ResponseHandler<T> handler;
@@ -30,7 +31,7 @@ public abstract class ResponseAction<T, R> implements Func1<T, R>,
     }
 
     @Override
-    public R call(T t) {
+    public R apply(T t) {
         IBaseData data;
         if (t instanceof IBaseData) {
             data = (IBaseData) t;
