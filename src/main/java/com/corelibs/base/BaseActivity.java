@@ -42,7 +42,8 @@ public abstract class BaseActivity<V extends BaseView, T extends BasePresenter<V
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(getLayoutId());
+        int layoutId = getLayoutId();
+        setContentView(layoutId);
         AppManager.getAppManager().addActivity(this);
         presenter = createPresenter();
         if (presenter != null) presenter.attachView((V) this);
@@ -186,10 +187,15 @@ public abstract class BaseActivity<V extends BaseView, T extends BasePresenter<V
         return null;
     }
 
+    @Override
+    public void finishView() {
+        finish();
+    }
+
     /**
      * 设置全屏模式，并将状态栏设置为透明，支持4.4及以上系统
      */
-    protected void setTranslucentStatusBar() {
+    public void setTranslucentStatusBar() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         }
@@ -206,7 +212,7 @@ public abstract class BaseActivity<V extends BaseView, T extends BasePresenter<V
     /**
      * 设置状态栏为浅色模式，状态栏上的图标都会变为深色。仅支持6.0及以上系统
      */
-    protected void setLightStatusBar() {
+    public void setLightStatusBar() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         }
@@ -215,7 +221,7 @@ public abstract class BaseActivity<V extends BaseView, T extends BasePresenter<V
     /**
      * 设置全屏模式
      */
-    protected void setFullScreen() {
+    public void setFullScreen() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
         }
@@ -224,7 +230,7 @@ public abstract class BaseActivity<V extends BaseView, T extends BasePresenter<V
     /**
      * 设置系统状态颜色，仅支持6.0及以上系统
      */
-    protected void setStatusBarColor(int color) {
+    public void setStatusBarColor(int color) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             getWindow().setStatusBarColor(color);
         }

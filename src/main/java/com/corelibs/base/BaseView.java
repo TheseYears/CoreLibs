@@ -44,6 +44,11 @@ public interface BaseView {
      */
     Context getViewContext();
 
+    /**
+     * 退出
+     */
+    void finishView();
+
     <T> Observable.Transformer<T, T> bind();
 
     <T> Observable.Transformer<T, T> bindUntil(FragmentEvent event);

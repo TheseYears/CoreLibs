@@ -112,4 +112,8 @@ public final class AppManager {
         finishAllActivity();
         System.exit(0);
     }
+
+    public int size() {
+        return activityStack.size();
+    }
 }
