@@ -148,12 +148,12 @@ public abstract class BaseActivity<V extends BaseView, T extends BasePresenter<V
 
     @Override
     public void showLoading() {
-        loadingDialog.show();
+        if (loadingDialog != null) loadingDialog.show();
     }
 
     @Override
     public void hideLoading() {
-        loadingDialog.dismiss();
+        if (loadingDialog != null) loadingDialog.dismiss();
     }
 
     @Override
@@ -202,7 +202,6 @@ public abstract class BaseActivity<V extends BaseView, T extends BasePresenter<V
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             getWindow().setStatusBarColor(Color.TRANSPARENT);
 
             setFullScreen();

@@ -2,11 +2,17 @@ package com.corelibs.views.navigation;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Build;
+import android.provider.Settings;
 import android.util.DisplayMetrics;
 import android.view.Display;
+import android.view.KeyCharacterMap;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
@@ -21,6 +27,9 @@ import java.lang.reflect.Method;
 public class AndroidBug5497Workaround {
     // For more information, see https://code.google.com/p/android/issues/detail?id=5497
     // To use this class, simply invoke assistActivity() on an Activity that already has its content view set.
+
+    private static final String NAVIGATION_GESTURE = "navigation_gesture_on";
+    private static final int NAVIGATION_GESTURE_OFF = 0;
 
     private Context context;
     private View mChildOfContent;
@@ -92,10 +101,11 @@ public class AndroidBug5497Workaround {
     private void setupBottomBarHeight() {
         bottomBarHeight = getDpi(context) - getScreenHeight(context);
         if (bottomBarHeight > 0) {
-            if (AndroidRomUtil.isEMUI()) {
+            if (AndroidRomUtil.isEmui()) {
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)
                     bottomBarHeight = 0;
             }
+
         }
     }
 
@@ -130,5 +140,52 @@ public class AndroidBug5497Workaround {
         DisplayMetrics outMetrics = new DisplayMetrics();
         wm.getDefaultDisplay().getMetrics(outMetrics);
         return outMetrics.heightPixels;
+    }
+
+    public static boolean hasNavigationBar(Context context) {
+        boolean hasNavigationBar = false;
+        Resources rs = context.getResources();
+        int id = rs.getIdentifier("config_showNavigationBar", "bool", "android");
+        if (id > 0) {
+            hasNavigationBar = rs.getBoolean(id);
+        }
+        try {
+            Class systemPropertiesClass = Class.forName("android.os.SystemProperties");
+            Method m = systemPropertiesClass.getMethod("get", String.class);
+            String navBarOverride = (String) m.invoke(systemPropertiesClass, "qemu.hw.mainkeys");
+            if ("1".equals(navBarOverride)) {
+                hasNavigationBar = false;
+            } else if ("0".equals(navBarOverride)) {
+                hasNavigationBar = true;
+            }
+        } catch (Exception e) {
+
+        }
+        return hasNavigationBar;
+    }
+
+    public static boolean isNavigationBarShow(Activity context){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            Display display = context.getWindowManager().getDefaultDisplay();
+            Point size = new Point();
+            Point realSize = new Point();
+            display.getSize(size);
+            display.getRealSize(realSize);
+            return realSize.y!=size.y;
+        }else {
+            boolean menu = ViewConfiguration.get(context).hasPermanentMenuKey();
+            boolean back = KeyCharacterMap.deviceHasKey(KeyEvent.KEYCODE_BACK);
+            if(menu || back) {
+                return false;
+            }else {
+                return true;
+            }
+        }
+    }
+
+
+    public static boolean navigationGestureEnabled(Context context) {
+        int val = Settings.Secure.getInt(context.getContentResolver(), NAVIGATION_GESTURE, NAVIGATION_GESTURE_OFF);
+        return val != NAVIGATION_GESTURE_OFF;
     }
 }
