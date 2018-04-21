@@ -9,12 +9,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.trello.rxlifecycle.ActivityEvent;
-import com.trello.rxlifecycle.FragmentEvent;
-import com.trello.rxlifecycle.components.support.RxFragment;
+import com.trello.rxlifecycle2.android.ActivityEvent;
+import com.trello.rxlifecycle2.android.FragmentEvent;
+import com.trello.rxlifecycle2.components.RxFragment;
 
 import butterknife.ButterKnife;
-import rx.Observable;
+import butterknife.Unbinder;
+import io.reactivex.ObservableTransformer;
 
 /**
  * Fragment基类, 继承自此类的Fragment需要实现{@link #getLayoutId}, {@link #init}
@@ -36,15 +37,16 @@ public abstract class BaseFragment<V extends BaseView, T extends BasePresenter<V
         extends RxFragment implements BaseView {
 
     private View parentView;
+    private Unbinder unbinder;
     protected T presenter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        parentView = getLayoutInflater(savedInstanceState).inflate(getLayoutId(), null, false);
+        parentView = LayoutInflater.from(getActivity()).inflate(getLayoutId(), null, false);
         presenter = createPresenter();
         if (presenter != null) presenter.attachView((V) this);
-        ButterKnife.bind(this, parentView);
+        unbinder = ButterKnife.bind(this, parentView);
 
         init(savedInstanceState);
         if (presenter != null) presenter.onStart();
@@ -63,7 +65,7 @@ public abstract class BaseFragment<V extends BaseView, T extends BasePresenter<V
         super.onDestroy();
         if (presenter != null) presenter.detachView();
         presenter = null;
-        ButterKnife.unbind(this);
+        if (unbinder != null) unbinder.unbind();
     }
 
     public T getPresenter() {
@@ -153,17 +155,17 @@ public abstract class BaseFragment<V extends BaseView, T extends BasePresenter<V
     }
 
     @Override
-    public <V> Observable.Transformer<V, V> bind() {
+    public <V> ObservableTransformer<V, V> bind() {
         return bindToLifecycle();
     }
 
     @Override
-    public <V> Observable.Transformer<V, V> bindUntil(FragmentEvent event) {
+    public <V> ObservableTransformer<V, V> bindUntil(FragmentEvent event) {
         return bindUntilEvent(event);
     }
 
     @Override
-    public <V> Observable.Transformer<V, V> bindUntil(ActivityEvent event) {
+    public <V> ObservableTransformer<V, V> bindUntil(ActivityEvent event) {
         return null;
     }
 

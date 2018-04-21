@@ -5,7 +5,9 @@ import com.corelibs.subscriber.ResponseHandler.IBaseData;
 
 import java.util.List;
 
-import rx.Subscriber;
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.subscribers.ResourceSubscriber;
 
 /**
  * 请使用此类来subscribe Retrofit返回Observable.
@@ -17,8 +19,8 @@ import rx.Subscriber;
  * 此类会托管隐藏加载框与错误处理, 如果希望自行处理错误, 请覆写{@link #error(Throwable)}函数,
  * 并且返回true.
  */
-public abstract class ResponseSubscriber<T> extends Subscriber<T>
-        implements ResponseHandler.CustomHandler<T> {
+public abstract class ResponseSubscriber<T> implements Observer<T>,
+        ResponseHandler.CustomHandler<T> {
 
     private ResponseHandler<T> handler;
 
@@ -45,8 +47,11 @@ public abstract class ResponseSubscriber<T> extends Subscriber<T>
     }
 
     @Override
-    public void onCompleted() {
-        handler.onCompleted();
+    public void onSubscribe(Disposable d) {}
+
+    @Override
+    public void onComplete() {
+        handler.onComplete();
         handler = null;
     }
 

@@ -3,10 +3,10 @@ package com.corelibs.base;
 import android.content.Context;
 
 import com.corelibs.api.ApiFactory;
-import com.trello.rxlifecycle.ActivityEvent;
-import com.trello.rxlifecycle.FragmentEvent;
+import com.trello.rxlifecycle2.android.ActivityEvent;
+import com.trello.rxlifecycle2.android.FragmentEvent;
 
-import rx.Observable;
+import io.reactivex.ObservableTransformer;
 
 /**
  * Presenter基类, Fragment需使用继承自此类的子类, 泛型需传入继承自{@link BaseView}的MVPView.
@@ -83,15 +83,15 @@ public abstract class BasePresenter<T extends BaseView> {
         return view.getViewContext();
     }
 
-    protected <V> Observable.Transformer<V, V> bindToLifeCycle() {
+    protected <V> ObservableTransformer<V, V> bindToLifeCycle() {
         return view.bind();
     }
 
-    protected <V> Observable.Transformer<V, V> bindUntilEvent(ActivityEvent event) {
+    protected <V> ObservableTransformer<V, V> bindUntilEvent(ActivityEvent event) {
         return view.bindUntil(event);
     }
 
-    protected <V> Observable.Transformer<V, V> bindUntilEvent(FragmentEvent event) {
+    protected <V> ObservableTransformer bindUntilEvent(FragmentEvent event) {
         return view.bindUntil(event);
     }
 

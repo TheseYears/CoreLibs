@@ -16,8 +16,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Map;
 
-import rx.Observable;
-import rx.Subscriber;
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
 
 /**
  * 通过{@link ImageUploader} 与 {@link ImageUploadRequest} 来上传图片.
@@ -49,27 +50,27 @@ public class ImageUploadHelper<T> {
     }
 
     public Observable<T> doPostWithObservable(final ImageUploadRequest request) {
-        return Observable.create(new Observable.OnSubscribe<T>() {
+        return Observable.create(new ObservableOnSubscribe<T>() {
             @Override
-            public void call(final Subscriber<? super T> subscriber) {
+            public void subscribe(final ObservableEmitter<T> emitter) throws Exception {
                 uploader.post(request.getUrl(), request.getParams(), request.getFiles(),
                         request.getFileKey(), new ImageUploader.OnResponseListener() {
-                    @Override @SuppressWarnings("unchecked")
-                    public void onResponse(String data) {
-                        if (request.getInnerClasses() == null || request.getInnerClasses().length <= 0)
-                            subscriber.onNext((T) gson.fromJson(data, request.getOutputClass()));
-                        else
-                            subscriber.onNext((T) gson.fromJson(data, ParameterizedTypeImpl
-                                    .get(request.getOutputClass(), request.getInnerClasses())));
+                            @Override @SuppressWarnings("unchecked")
+                            public void onResponse(String data) {
+                                if (request.getInnerClasses() == null || request.getInnerClasses().length <= 0)
+                                    emitter.onNext((T) gson.fromJson(data, request.getOutputClass()));
+                                else
+                                    emitter.onNext((T) gson.fromJson(data, ParameterizedTypeImpl
+                                            .get(request.getOutputClass(), request.getInnerClasses())));
 
-                        subscriber.onCompleted();
-                    }
+                                emitter.onComplete();
+                            }
 
-                    @Override
-                    public void onError(Exception e) {
-                        subscriber.onError(e);
-                    }
-                });
+                            @Override
+                            public void onError(Exception e) {
+                                emitter.onError(e);
+                            }
+                        });
             }
         });
     }

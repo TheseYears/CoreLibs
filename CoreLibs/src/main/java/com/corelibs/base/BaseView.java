@@ -2,10 +2,10 @@ package com.corelibs.base;
 
 import android.content.Context;
 
-import com.trello.rxlifecycle.ActivityEvent;
-import com.trello.rxlifecycle.FragmentEvent;
+import com.trello.rxlifecycle2.android.ActivityEvent;
+import com.trello.rxlifecycle2.android.FragmentEvent;
 
-import rx.Observable;
+import io.reactivex.ObservableTransformer;
 
 /**
  * MVPView基础接口
@@ -49,9 +49,9 @@ public interface BaseView {
      */
     void finishView();
 
-    <T> Observable.Transformer<T, T> bind();
+    <T> ObservableTransformer<T, T> bind();
 
-    <T> Observable.Transformer<T, T> bindUntil(FragmentEvent event);
+    <T> ObservableTransformer<T, T> bindUntil(FragmentEvent event);
 
-    <T> Observable.Transformer<T, T> bindUntil(ActivityEvent event);
+    <T> ObservableTransformer<T, T> bindUntil(ActivityEvent event);
 }

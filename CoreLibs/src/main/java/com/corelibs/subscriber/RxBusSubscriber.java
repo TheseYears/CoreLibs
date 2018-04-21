@@ -1,13 +1,18 @@
 package com.corelibs.subscriber;
 
-import rx.Subscriber;
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
 
 /**
  * 请使用此类来subscribe RxBus返回的Observable以简化onError与onCompleted函数.
  */
-public abstract class RxBusSubscriber<T> extends Subscriber<T> {
+public abstract class RxBusSubscriber<T> implements Observer<T> {
+
     @Override
-    public void onCompleted() {
+    public void onSubscribe(Disposable d) {}
+
+    @Override
+    public void onComplete() {
         completed();
     }
 

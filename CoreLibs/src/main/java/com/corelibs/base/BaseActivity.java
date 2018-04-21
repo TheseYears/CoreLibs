@@ -14,12 +14,12 @@ import android.widget.TextView;
 import com.corelibs.common.AppManager;
 import com.corelibs.utils.ToastMgr;
 import com.corelibs.views.LoadingDialog;
-import com.trello.rxlifecycle.ActivityEvent;
-import com.trello.rxlifecycle.FragmentEvent;
-import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
+import com.trello.rxlifecycle2.android.ActivityEvent;
+import com.trello.rxlifecycle2.android.FragmentEvent;
+import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
 
 import butterknife.ButterKnife;
-import rx.Observable;
+import io.reactivex.ObservableTransformer;
 
 /**
  * Activity基类, 继承自此类的Activity需要实现{@link #getLayoutId},{@link #init}
@@ -173,17 +173,17 @@ public abstract class BaseActivity<V extends BaseView, T extends BasePresenter<V
     public void showEmptyHint() {}
 
     @Override
-    public <T> Observable.Transformer<T, T> bind() {
+    public <T> ObservableTransformer<T, T> bind() {
         return bindToLifecycle();
     }
 
     @Override
-    public <T> Observable.Transformer<T, T> bindUntil(ActivityEvent event) {
+    public <T> ObservableTransformer<T, T> bindUntil(ActivityEvent event) {
         return bindUntilEvent(event);
     }
 
     @Override
-    public <T> Observable.Transformer<T, T> bindUntil(FragmentEvent event) {
+    public <T> ObservableTransformer<T, T> bindUntil(FragmentEvent event) {
         return null;
     }
 

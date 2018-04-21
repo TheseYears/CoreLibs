@@ -1,10 +1,10 @@
 package com.corelibs.utils.rxbus;
 
-import rx.Observable;
-import rx.functions.Func1;
-import rx.subjects.PublishSubject;
-import rx.subjects.SerializedSubject;
-import rx.subjects.Subject;
+import io.reactivex.Observable;
+import io.reactivex.functions.Function;
+import io.reactivex.functions.Predicate;
+import io.reactivex.subjects.PublishSubject;
+import io.reactivex.subjects.Subject;
 
 /**
  * 基于事件RxJava的事件总线
@@ -12,12 +12,12 @@ import rx.subjects.Subject;
 public class RxBus {
 
     private static final RxBus instance = new RxBus();
+    private final Subject<Object> bus;
 
-    //private final PublishSubject<Object> bus = PublishSubject.create();
-
-    // If multiple threads are going to emit events to this
-    // then it must be made thread-safe like this instead
-    private final Subject<Object, Object> bus = new SerializedSubject<>(PublishSubject.create());
+    private RxBus() {
+        // toSerialized method made bus thread safe
+        bus = PublishSubject.create().toSerialized();
+    }
 
     /** 获取默认总线 **/
     public static RxBus getDefault() {
@@ -72,9 +72,9 @@ public class RxBus {
      * @param eventType 事件类型, 只接收符合事件类型的事件
      */
     public <T> Observable<T> toObservable(final Class<T> eventType) {
-        return bus.filter(new Func1<Object, Boolean>() {
+        return bus.filter(new Predicate<Object>() {
             @Override
-            public Boolean call(Object o) {
+            public boolean test(Object o) throws Exception {
                 return eventType.isInstance(o);
             }
         }).cast(eventType);
@@ -86,17 +86,17 @@ public class RxBus {
      * @param tag 事件类型, 只接收与事件类型相同的事件
      */
     public <T> Observable<T> toObservable(final Class<T> eventType, final String tag) {
-        return bus.filter(new Func1<Object, Boolean>() {
+        return bus.filter(new Predicate<Object>() {
             @Override
-            public Boolean call(Object o) {
+            public boolean test(Object o) throws Exception {
                 if (!(o instanceof RxBusObject)) return false;
                 RxBusObject ro = (RxBusObject) o;
                 return eventType.isInstance(ro.getObj()) && tag != null
                         && tag.equals(ro.getTag());
             }
-        }).map(new Func1<Object, T>() {
+        }).map(new Function<Object, T>() {
             @Override
-            public T call(Object o) {
+            public T apply(Object o) throws Exception {
                 RxBusObject ro = (RxBusObject) o;
                 return (T) ro.getObj();
             }

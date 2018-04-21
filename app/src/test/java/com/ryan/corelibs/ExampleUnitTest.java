@@ -1,4 +1,4 @@
-package com.ryan.corelibsapp;
+package com.ryan.corelibs;
 
 import org.junit.Test;
 

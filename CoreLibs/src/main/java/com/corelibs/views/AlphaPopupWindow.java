@@ -14,6 +14,7 @@ import android.widget.PopupWindow;
 public class AlphaPopupWindow extends PopupWindow {
 
     private Activity context;
+    private float alpha = 0.7f;
 
     public AlphaPopupWindow(Activity context) {
         this.context = context;
@@ -40,7 +41,7 @@ public class AlphaPopupWindow extends PopupWindow {
     @Override
     public void showAtLocation(View parent, int gravity, int x, int y) {
         super.showAtLocation(parent, gravity, x, y);
-        setWindowAlpha(0.7f);
+        setWindowAlpha(alpha);
     }
 
     @Override

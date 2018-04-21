@@ -1,4 +1,4 @@
-package com.ryan.corelibsapp;
+package com.ryan.corelibs;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

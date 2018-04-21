@@ -8,7 +8,7 @@ import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.util.List;
 
-import retrofit2.adapter.rxjava.HttpException;
+import retrofit2.HttpException;
 
 /**
  * 网络结果处理类, 此类会判断网络错误与业务错误.
@@ -39,7 +39,7 @@ public class ResponseHandler<T> {
         return data != null && data.size() > 0;
     }
 
-    public void onCompleted() {
+    public void onComplete() {
         release();
     }
 
@@ -109,6 +109,7 @@ public class ResponseHandler<T> {
     }
 
     public interface CustomHandler<T> {
+
         /**
          * 请求成功同时业务成功的情况下会调用此函数
          */

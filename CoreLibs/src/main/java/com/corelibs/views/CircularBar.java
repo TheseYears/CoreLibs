@@ -1,5 +1,8 @@
 package com.corelibs.views;
 
+import android.animation.Animator;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
@@ -12,10 +15,6 @@ import android.view.animation.LinearInterpolator;
 
 import com.corelibs.R;
 import com.corelibs.utils.DisplayUtil;
-import com.nineoldandroids.animation.Animator;
-import com.nineoldandroids.animation.Animator.AnimatorListener;
-import com.nineoldandroids.animation.ObjectAnimator;
-import com.nineoldandroids.animation.ValueAnimator;
 
 /**
  * 特殊动画的圆形进度条
@@ -86,7 +85,7 @@ public class CircularBar extends View {
 		sweepAnimator.setRepeatCount(ValueAnimator.INFINITE);
 		sweepAnimator.setRepeatMode(ValueAnimator.RESTART);
 		sweepAnimator.setInterpolator(new DecelerateInterpolator());
-		sweepAnimator.addListener(new AnimatorListener() {
+		sweepAnimator.addListener(new Animator.AnimatorListener() {
 
 			@Override
 			public void onAnimationStart(Animator animation) {
