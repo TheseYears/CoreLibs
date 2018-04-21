@@ -1,7 +1,7 @@
 package com.ryan.corelibs.presenter;
 
 import com.corelibs.api.ResponseTransformer;
-import com.corelibs.pagination.presenter.PagePresenter;
+import com.corelibs.pagination.presenter.ListPagePresenter;
 import com.corelibs.subscriber.PaginationSubscriber;
 import com.ryan.corelibs.model.api.GithubApi;
 import com.ryan.corelibs.model.entity.Data;
@@ -10,7 +10,7 @@ import com.ryan.corelibs.view.interfaces.MainView;
 
 import java.util.List;
 
-public class MainPresenter extends PagePresenter<MainView> {
+public class MainPresenter extends ListPagePresenter<MainView> {
 
     private GithubApi api;
 
@@ -25,6 +25,9 @@ public class MainPresenter extends PagePresenter<MainView> {
     }
 
     public void search(final boolean reload) {
+        if (!doPagination(reload)) return;
+        if (reload) view.showLoading();
+
         api.searchRepositories("CoreLibs", getPageNo(), getPageSize())
                 .compose(new ResponseTransformer<Data<Repository>>())
                 .compose(this.<Data<Repository>>bindToLifeCycle())
@@ -36,7 +39,7 @@ public class MainPresenter extends PagePresenter<MainView> {
 
                     @Override
                     protected Object getCondition(Data<Repository> data, boolean dataNotNull) {
-                        return data.total_count;
+                        return getListResult(data, dataNotNull);
                     }
 
                     @Override

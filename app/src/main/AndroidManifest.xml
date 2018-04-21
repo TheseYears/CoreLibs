@@ -20,6 +20,15 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name="com.corelibs.exception.ExceptionDialogActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/ExceptionDialogStyle" />
+
+        <activity
+            android:name="com.corelibs.exception.ExceptionDetailActivity"
+            android:screenOrientation="portrait" />
+
     </application>
 
 </manifest>
