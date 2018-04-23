@@ -2,11 +2,17 @@
 
 这是一个MVP-Based, 集成了很多常用库, 工具以及控件的库集合, 旨在提高开发效率并保证一定的代码质量.
 
+## 关于工程编译
+
+* 请使用Android Studio 3.0以上版本编译， Gradle版本3.0.1, buildToolsVersion 26.0.2, 请根据需要自行选择.
+* app模块中包含MVP的使用示例-调用GitHub的搜索接口（关键词CoreLibs）并用RecyclerView显示出来.
+* app模块中包含一些项目基础代码, 以及一些个人常用的工具和控件, 这些工具和控件不完全具备通用性, 因此没法放在CoreLibs下.
+
 ## 引入方法
 
 * 下载CoreLibs
 * 新建一个Android工程
-* 将CoreLibs作为一个Module导入该项目
+* 将CoreLibs文件夹下的CoreLibs作为一个Module导入该项目
 * 主模块添加CoreLibs的依赖
 * 在最外层的build.gradle文件中添加maven库:
 
@@ -69,3 +75,7 @@ GalleryFinalConfigurator.config(getApplicationContext()); //初始化GalleryFina
     * BaseRecyclerAdapter默认直接支持添加header与footer <BR/>
     * 重构分页方式
     * 需要使用新的 [MvpClassesGenerator](https://github.com/TheseYears/MvpClassesGenerator/blob/master/MvpClassesGenerator.jar) 插件
+* 2018-04 
+    * 修改项目目录为可执行的application，包含CoreLibs模块，而非一个单独的android module
+    * 从RxJava1升级至RxJava2
+    * 各个库均升级至较新版本
