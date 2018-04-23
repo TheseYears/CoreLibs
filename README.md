@@ -4,9 +4,13 @@
 
 ## 关于工程
 
-* 请使用Android Studio 3.0以上版本编译， Gradle版本3.0.1, buildToolsVersion 26.0.2, 请根据需要自行选择.
-* app模块中包含MVP的使用示例-调用GitHub的搜索接口（关键词CoreLibs）并用RecyclerView显示出来.
+* 请使用Android Studio 3.0以上版本编译, Gradle版本3.0.1, buildToolsVersion 26.0.2, 请根据需要自行选择.
+* app模块中包含MVP的使用示例-调用GitHub的搜索接口（关键词CoreLibs）并用RecyclerView显示出来（带有分页）.
 * app模块中包含一些项目基础代码, 以及一些个人常用的工具和控件, 这些工具和控件不完全具备通用性, 因此没法放在CoreLibs下.
+
+## 截图
+
+![screen shot](https://raw.githubusercontent.com/TheseYears/CoreLibs/master/screen.jpg)
 
 ## 引入方法
 
