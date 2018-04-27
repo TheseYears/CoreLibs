@@ -36,8 +36,8 @@ import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
-import com.bumptech.glide.DrawableRequestBuilder;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestBuilder;
 
 import java.io.File;
 
@@ -240,7 +240,7 @@ public class BaseAdapterHelper extends RecyclerView.ViewHolder {
      * @param requestBuilder The Picasso request builder. (e.g. Picasso.with(context).load(imageUrl))
      * @return The BaseAdapterHelper for chaining.
      */
-    public BaseAdapterHelper setImageBuilder(int viewId, DrawableRequestBuilder requestBuilder) {
+    public BaseAdapterHelper setImageBuilder(int viewId, RequestBuilder<Drawable> requestBuilder) {
         ImageView view = retrieveView(viewId);
         requestBuilder.into(view);
         return this;
