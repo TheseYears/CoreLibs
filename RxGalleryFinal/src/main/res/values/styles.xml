@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="TextAppearance"/>
+    <style name="TextAppearance.Widget"/>
+    <style name="TextAppearance.Widget.AppCompat"/>
+    <style name="TextAppearance.Widget.AppCompat.Toolbar"/>
+    <style name="TextAppearance.Widget.AppCompat.Toolbar.Title" tools:override="true">
+        <item name="android:textSize">16sp</item>
+    </style>
+</resources>

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.Toast;
 
 import com.corelibs.base.BaseActivity;
 import com.corelibs.utils.DisplayUtil;
@@ -17,10 +18,18 @@ import com.ryan.corelibs.model.entity.Repository;
 import com.ryan.corelibs.presenter.MainPresenter;
 import com.ryan.corelibs.view.interfaces.MainView;
 import com.ryan.corelibs.widget.NavBar;
+import com.yalantis.ucrop.model.AspectRatio;
 
 import java.util.List;
 
 import butterknife.BindView;
+import cn.finalteam.rxgalleryfinal.RxGalleryFinal;
+import cn.finalteam.rxgalleryfinal.RxGalleryFinalApi;
+import cn.finalteam.rxgalleryfinal.imageloader.ImageLoaderType;
+import cn.finalteam.rxgalleryfinal.rxbus.RxBusResultDisposable;
+import cn.finalteam.rxgalleryfinal.rxbus.event.ImageMultipleResultEvent;
+import cn.finalteam.rxgalleryfinal.rxbus.event.ImageRadioResultEvent;
+import cn.finalteam.rxgalleryfinal.utils.Logger;
 
 public class MainActivity extends BaseActivity<MainView, MainPresenter> implements MainView {
 
@@ -38,6 +47,21 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter> implemen
     @Override
     protected void init(Bundle savedInstanceState) {
         nav.setTitle("search CoreLibs");
+        nav.setOnClickListener(view -> {
+            RxGalleryFinal
+                    .with(MainActivity.this)
+                    .image()
+                    .radio()
+                    .cropAspectRatioOptions(0, new AspectRatio("1:1", 1, 1))
+                    .crop()
+                    .imageLoader(ImageLoaderType.GLIDE)
+                    .subscribe(new RxBusResultDisposable<ImageRadioResultEvent>() {
+                        @Override
+                        protected void onEvent(ImageRadioResultEvent imageRadioResultEvent) throws Exception {
+                            Toast.makeText(getBaseContext(), "选中了图片路径：" + imageRadioResultEvent.getResult().getOriginalPath(), Toast.LENGTH_SHORT).show();
+                        }
+                    }).openGallery();
+        });
 
         adapter = new GithubAdapter(this);
 

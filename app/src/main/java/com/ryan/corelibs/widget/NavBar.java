@@ -31,7 +31,7 @@ public class NavBar extends TranslucentNavBar {
 
     @Override
     protected void initView() {
-        setBackgroundColor(0xff333333);
+        setColor(0xff333333);
     }
 
     public void setTitle(String title) {

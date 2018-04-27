@@ -29,7 +29,7 @@ public class MainPresenter extends ListPagePresenter<MainView> {
         if (reload) view.showLoading();
 
         api.searchRepositories("CoreLibs", getPageNo(), getPageSize())
-                .compose(new ResponseTransformer<Data<Repository>>())
+                .compose(new ResponseTransformer<>())
                 .compose(this.<Data<Repository>>bindToLifeCycle())
                 .subscribe(new PaginationSubscriber<Data<Repository>>(view, this, reload) {
                     @Override

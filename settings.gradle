@@ -1,1 +1,1 @@
-include ':app', ':CoreLibs'
+include ':app', ':CoreLibs', ':RxGalleryFinal'
