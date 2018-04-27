@@ -18,6 +18,8 @@
 * 新建一个Android工程
 * 将CoreLibs文件夹下的CoreLibs作为一个Module导入该项目
 * 主模块添加CoreLibs的依赖
+* 主模块添加RxGalleryFinal的依赖
+* 主模块添加butterknife的依赖
 * 在最外层的build.gradle文件中添加maven库:
 
 ````
@@ -30,6 +32,16 @@ allprojects {
 }
 
 ````
+* 主模块添加如下代码以开启lambda语法:
+````
+android {
+    ...
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+````
 
 * 新建一个Application类并在onCreate中加入如下代码:
 
@@ -39,7 +51,13 @@ ToastMgr.init(getApplicationContext()); //初始化Toast管理器
 Configuration.enableLoggingNetworkParams(); //打开网络请求Log打印，需要在初始化Retrofit接口工厂之前调用
 ApiFactory.getFactory().add(Urls.ROOT_API); //初始化Retrofit接口工厂
 PreferencesHelper.init(getApplicationContext()); //初始化SharedPreferences工具类
-GalleryFinalConfigurator.config(getApplicationContext()); //初始化GalleryFinal
+
+if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+    // android 7.0系统解决拍照报exposed beyond app through ClipData.Item.getUri()
+    StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+    StrictMode.setVmPolicy(builder.build());
+    builder.detectFileUriExposure();
+}
 ````
 * 根据服务器接口返回JSON的结构, 新建一个实体类, 并实现IBaseData.
 * 根据需要项目的主题可以使用CoreLibs中的AppBaseCompactTheme.
@@ -82,4 +100,17 @@ GalleryFinalConfigurator.config(getApplicationContext()); //初始化GalleryFina
     * 修改项目目录为可执行的application，包含CoreLibs模块，而非一个单独的android module
     * 从RxJava1升级至RxJava2
     * 各个库均升级至较新版本
- 
+        * glide -> 4.6.1
+        * butterknife -> 8.8.1
+        * rxjava -> 2.1.12
+        * rxandroid -> 2.0.1
+        * rxlifecycle -> 2.2.1
+        * retrofit -> 2.4.0
+        * material-dialogs -> 0.9.6.0
+        * RxGalleryFinal -> 1.1.3
+    * 引入lambda语法
+    * 升级GalleryFinal至RxGalleryFinal，但由于有一点不太满意的地方，因此fork到本地做了些修改
+        * 微调ToolBar样式，微调列表样式
+        * 修改某些文件夹有图片但显示不出来的限制
+        * 升级UCrop至2.2.2，微调UCrop ToolBar样式
+        * 修复MediaActivity可能会内存泄漏的问题
