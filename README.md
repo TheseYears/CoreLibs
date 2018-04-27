@@ -109,7 +109,7 @@ if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
         * material-dialogs -> 0.9.6.0
         * RxGalleryFinal -> 1.1.3
     * 引入lambda语法
-    * 升级GalleryFinal至RxGalleryFinal，但由于有一点不太满意的地方，因此fork到本地做了些修改
+    * 升级GalleryFinal至RxGalleryFinal，但由于有一点不太满意的地方，因此fork到本地做了些修改
         * 微调ToolBar样式，微调列表样式
         * 修改某些文件夹有图片但显示不出来的限制
         * 升级UCrop至2.2.2，微调UCrop ToolBar样式
