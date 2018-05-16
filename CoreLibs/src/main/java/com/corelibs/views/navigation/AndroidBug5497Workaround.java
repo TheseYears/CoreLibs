@@ -21,6 +21,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 /**
+ * 已弃置，无法兼容现有全面屏，在全面屏手机关闭了底部导航栏并且开启了全屏手势后，以小米为首的手机获取底部栏的高度是错误的！
  * 用于解决Activity在全屏下，同时windowSoftInputMode为adjustResize时，软键盘弹起却不会Resize布局的情况。<BR />
  * 使用方法：在设置了content view的Activity中调用AndroidBug5497Workaround.assistActivity(activity);
  */
