@@ -114,3 +114,6 @@ if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
         * 修改某些文件夹有图片但显示不出来的限制
         * 升级UCrop至2.2.2，微调UCrop ToolBar样式
         * 修复MediaActivity可能会内存泄漏的问题
+* 2018-05
+    * 弃置AndroidBug5497Workaround，无法兼容现有全面屏，在全面屏手机关闭了底部导航栏并且开启了全屏手势后，以小米为首的手机获取底部栏的高度是错误的
+    * 新增ResizeLinearLayout、ResizeRelativeLayout、ResizeFrameLayout，在设置了布局根部使用此控件并且加上android:fitsSystemWindows="true"即可解决Activity在全屏下，同时windowSoftInputMode为adjustResize时，软键盘弹起却不会Resize布局的情况。
